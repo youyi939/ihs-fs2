@@ -1,0 +1,42 @@
+server:
+  port: 8160
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ihs
+    password: admin@123456!
+    url: jdbc:mysql://rds.unv.ink:3306/huashun-ihs?useSSL=true&useUnicode=true&characterEncoding=utf8&serverTimezone=UTC%2B8
+  jackson:
+    generator:
+      write_numbers_as_strings: true
+  servlet:
+    multipart:
+      max-file-size: 400MB
+      max-request-size: 400MB
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+      id-type: none
+  mapper-locations:
+    - classpath:com/hsgrjt/fushun/ihs/**/*.xml
+
+
+oss:
+  endpoint: oss-cn-zhangjiakou.aliyuncs.com
+  url: hsihs-fushun-file.oss-cn-zhangjiakou.aliyuncs.com
+  accessKeyId: LTAI5t89XcVJ2VoHP31nz5mq
+  accessKeySecret: Qr5ZEZUQvQNop6Mac3dUHJOPJCsZYf
+  bucketName: hsihs-fushun-file
+
+#oss:
+#  endpoint: oss-cn-beijing.aliyuncs.com
+#  url: kenchen.oss-cn-beijing.aliyuncs.com
+#  accessKeyId: LTAI4Fmxt15JMN7bPa9bxnMb
+#  accessKeySecret: rtuJsWXY3NkvJMUGpMBsMJmlsdxqsd
+#  bucketName: kenchen
