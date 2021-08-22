@@ -1,5 +1,6 @@
 package com.hsgrjt.fushun.ihs.config;
 
+import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
@@ -13,27 +14,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @MapperScan("com.hsgrjt.fushun.ihs.**.mapper")
 public class MyBatisPlusConfig {
 
-    /*
-     * 乐观锁插件配置
-     */
+    // 最新版
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
-        interceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
+        interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
         return interceptor;
     }
-
-    /*
-     * 分页插件配置
-     */
-    @Bean
-    public PaginationInnerInterceptor paginationInnerInterceptor() {
-        return new PaginationInnerInterceptor();
-    }
-
-//    public PerformanceMonitorInterceptor performanceMonitorInterceptor() {
-//        PerformanceMonitorInterceptor performanceMonitorInterceptor = new PerformanceMonitorInterceptor();
-//        performanceMonitorInterceptor.set
-//    }
-
 }

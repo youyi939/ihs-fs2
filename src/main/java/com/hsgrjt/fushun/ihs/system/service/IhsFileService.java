@@ -1,6 +1,7 @@
 package com.hsgrjt.fushun.ihs.system.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hsgrjt.fushun.ihs.system.entity.IhsFile;
 import com.hsgrjt.fushun.ihs.system.entity.dto.IhsFileAddDTO;
 import org.springframework.stereotype.Service;
@@ -11,15 +12,16 @@ import org.springframework.stereotype.Service;
  * @Date: Create in  2021/8/22 下午4:27
  */
 @Service
-public interface IhsFileService  extends SysService<IhsFile>{
+public interface IhsFileService  {
 
     /**
      * 分页获取表列表
      * @param page
-     * @param name
+     * @param id
      * @return
      */
-    IPage<IhsFile> queryList(IPage<IhsFile> page, String name);
+    IPage<IhsFile> queryList(Page<IhsFile> page, Integer id);
+
 
 
     /**
