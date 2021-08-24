@@ -17,7 +17,7 @@ import java.util.List;
 
 /**
  * @Author: KenChen
- * @Description:
+ * @Description: 文件记录表实现类
  * @Date: Create in  2021/8/22 下午4:27
  */
 @Service

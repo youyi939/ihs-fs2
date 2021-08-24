@@ -3,6 +3,7 @@ package com.hsgrjt.fushun.ihs.system.service.impl;
 import com.hsgrjt.fushun.ihs.config.OSSConfig;
 import com.hsgrjt.fushun.ihs.system.entity.vo.R;
 import com.hsgrjt.fushun.ihs.system.service.CommonService;
+import com.hsgrjt.fushun.ihs.system.service.IhsFileService;
 import com.hsgrjt.fushun.ihs.utils.OSSBootUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,9 +26,10 @@ public class CommonServiceImpl implements CommonService {
 
     /**
      * 上传文件至阿里云 oss
+     * uploadKey 文件类型：个人文件/通用文件/周计划/月计划
      */
     @Override
-    public R uploadOSS(MultipartFile file, String uploadKey) throws Exception {
+    public Map<String,Object> uploadOSS(MultipartFile file, String uploadKey) throws Exception {
 
         String ossFileUrlSingle = null;
 
@@ -36,9 +38,8 @@ public class CommonServiceImpl implements CommonService {
         ossFileUrlBoot = OSSBootUtil.upload(ossConfig, file, "upload/demo");
 
         Map<String, Object> resultMap = new HashMap<>(16);
-        resultMap.put("ossFileUrlSingle", ossFileUrlSingle);
         resultMap.put("ossFileUrlBoot", ossFileUrlBoot);
 
-        return R.ok().putData(resultMap);
+        return resultMap;
     }
 }

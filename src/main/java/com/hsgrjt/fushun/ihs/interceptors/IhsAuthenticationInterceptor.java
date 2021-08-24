@@ -37,6 +37,8 @@ public class IhsAuthenticationInterceptor implements HandlerInterceptor {
         } else {
             return true;
         }
+
+
 //        HandlerMethod handlerMethod = (HandlerMethod) handler;
 //        if (handlerMethod.getMethodAnnotation(RequirePermission.class) != null || handlerMethod.getBeanType().isAnnotationPresent(RequirePermission.class)) {
 //            // 标记有需要指定权限

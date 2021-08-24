@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
  * @Description: 文件表操作接口
  * @Date: Create in  2021/8/22 下午4:40
  */
-@Api(tags = {"CORE 文件表操作"})
+@Api(tags = {"CORE 文件记录表操作"})
 @RestController
 @RequestMapping("/system/ihsFile")
 public class IhsFileController {

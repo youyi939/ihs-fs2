@@ -3,6 +3,8 @@ package com.hsgrjt.fushun.ihs.system.service;
 import com.hsgrjt.fushun.ihs.system.entity.vo.R;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Map;
+
 /**
  * @Author: KenChen
  * @Description: oss service层
@@ -17,5 +19,5 @@ public interface CommonService {
      * @return
      * @throws Exception
      */
-    R uploadOSS(MultipartFile file, String uploadKey) throws Exception;
+    Map<String,Object> uploadOSS(MultipartFile file, String uploadKey) throws Exception;
 }

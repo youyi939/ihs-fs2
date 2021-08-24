@@ -26,7 +26,7 @@ mybatis-plus:
   mapper-locations:
     - classpath:com/hsgrjt/fushun/ihs/**/*.xml
 
-
+#ihs oss配置
 oss:
   endpoint: oss-cn-zhangjiakou.aliyuncs.com
   url: hsihs-fushun-file.oss-cn-zhangjiakou.aliyuncs.com
@@ -34,6 +34,7 @@ oss:
   accessKeySecret: Qr5ZEZUQvQNop6Mac3dUHJOPJCsZYf
   bucketName: hsihs-fushun-file
 
+#Ken oss配置
 #oss:
 #  endpoint: oss-cn-beijing.aliyuncs.com
 #  url: kenchen.oss-cn-beijing.aliyuncs.com

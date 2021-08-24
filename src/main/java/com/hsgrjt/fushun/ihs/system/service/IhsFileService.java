@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * @Author: KenChen
- * @Description:
+ * @Description: 文件记录表service
  * @Date: Create in  2021/8/22 下午4:27
  */
 @Service

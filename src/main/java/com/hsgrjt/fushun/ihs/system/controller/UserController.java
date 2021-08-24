@@ -8,6 +8,7 @@ import com.hsgrjt.fushun.ihs.system.service.TokenSessionService;
 import com.hsgrjt.fushun.ihs.system.service.UserService;
 import com.hsgrjt.fushun.ihs.utils.JsonMessage;
 import com.hsgrjt.fushun.ihs.utils.TokenUtil;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +24,7 @@ import java.util.List;
  * @author 晟翼科技
  * @since 2021-08-10
  */
+@Api(tags = {"CORE 用户controller"})
 @RestController
 @RequestMapping("/system/user")
 public class UserController {
