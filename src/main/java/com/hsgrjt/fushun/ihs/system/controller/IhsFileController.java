@@ -39,8 +39,8 @@ public class IhsFileController {
     })
     @ApiOperation("分页查询文件记录列表")
     @GetMapping(value = "/selectPage")
-    public R<Page<IhsFile>> selectUserPage(@RequestParam(name = "current") Integer current, @RequestParam(name = "size") Integer size,@RequestParam(name = "id") Integer id){
-        return R.ok("分页查询成功").putData( fileService.queryList(new Page<IhsFile>(current,size),id));
+    public R<Page<IhsFile>> selectUserPage(@RequestParam(name = "current") Integer current, @RequestParam(name = "size") Integer size,@RequestParam(name = "id") Integer id,@RequestParam(name = "type",required = false)String type){
+        return R.ok("分页查询成功").putData( fileService.queryList(new Page<IhsFile>(current,size),id,type));
     }
 
 

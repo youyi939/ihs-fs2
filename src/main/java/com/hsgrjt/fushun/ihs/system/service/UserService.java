@@ -1,7 +1,7 @@
 package com.hsgrjt.fushun.ihs.system.service;
 
-import com.hsgrjt.fushun.ihs.system.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.hsgrjt.fushun.ihs.system.entity.User;
 
 /**
  * <p>

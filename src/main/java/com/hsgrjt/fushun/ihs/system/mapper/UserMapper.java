@@ -1,7 +1,7 @@
 package com.hsgrjt.fushun.ihs.system.mapper;
 
-import com.hsgrjt.fushun.ihs.system.entity.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.hsgrjt.fushun.ihs.system.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -16,5 +16,7 @@ import org.apache.ibatis.annotations.Mapper;
 public interface UserMapper extends BaseMapper<User> {
 
     Integer hasUsername(String username);
+
+
 
 }

@@ -20,7 +20,7 @@ public interface IhsFileService  {
      * @param id
      * @return
      */
-    IPage<IhsFile> queryList(Page<IhsFile> page, Integer id);
+    IPage<IhsFile> queryList(Page<IhsFile> page, Integer id,String type);
 
 
 

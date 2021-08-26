@@ -1,7 +1,7 @@
 package com.hsgrjt.fushun.ihs.system.service;
 
-import com.hsgrjt.fushun.ihs.system.entity.TokenSession;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.hsgrjt.fushun.ihs.system.entity.TokenSession;
 
 /**
  * <p>
@@ -12,5 +12,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2021-08-10
  */
 public interface TokenSessionService extends IService<TokenSession> {
+
+    boolean deleteToken(String token);
+
+    TokenSession getTokenDetails(String token);
 
 }

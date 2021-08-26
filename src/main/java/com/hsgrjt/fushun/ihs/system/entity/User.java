@@ -1,17 +1,13 @@
 package com.hsgrjt.fushun.ihs.system.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import java.util.Date;
-import com.baomidou.mybatisplus.annotation.Version;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableField;
-import java.io.Serializable;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -93,6 +89,9 @@ public class User implements Serializable {
 
     @ApiModelProperty(value = "主题")
     private String theme;
+
+    @ApiModelProperty(value = "我的记事本内容")
+    private String note;
 
     @ApiModelProperty(value = "自定义设置信息")
     private String customSetting;

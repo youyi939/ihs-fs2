@@ -7,6 +7,7 @@ import com.hsgrjt.fushun.ihs.system.entity.IhsFile;
 import com.hsgrjt.fushun.ihs.system.entity.dto.IhsFileAddDTO;
 import com.hsgrjt.fushun.ihs.system.mapper.IhsFileMapper;
 import com.hsgrjt.fushun.ihs.system.service.IhsFileService;
+import com.hsgrjt.fushun.ihs.utils.V;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +28,12 @@ public class IhsFileServiceImpl  implements IhsFileService {
     IhsFileMapper ihsFileMapper;
 
     @Override
-    public IPage<IhsFile> queryList(Page<IhsFile> page, Integer id) {
+    public IPage<IhsFile> queryList(Page<IhsFile> page, Integer id,String type) {
         QueryWrapper<IhsFile> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda().eq(IhsFile::getCreateUserId,id);
+        if (!V.isEmpty(type)){
+            queryWrapper.lambda().eq(IhsFile::getCategory,type);
+        }
         return ihsFileMapper.selectPage(page,queryWrapper);
     }
 
