@@ -8,6 +8,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * <p>
  * 用户信息表 服务实现类
@@ -36,5 +38,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public boolean hasUsername(String username) {
         return userMapper.hasUsername(username) > 0;
+    }
+
+    @Override
+    public List<User> findAllUser() {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        return baseMapper.selectList(queryWrapper);
     }
 }

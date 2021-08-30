@@ -6,6 +6,9 @@ import com.hsgrjt.fushun.ihs.system.entity.IhsFile;
 import com.hsgrjt.fushun.ihs.system.entity.dto.IhsFileAddDTO;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * @Author: KenChen
  * @Description: 文件记录表service
@@ -22,6 +25,21 @@ public interface IhsFileService  {
      */
     IPage<IhsFile> queryList(Page<IhsFile> page, Integer id,String type);
 
+
+    /**
+     * 分页获取当前登陆人 "个人文件"列表
+     * @param page
+     * @param id
+     * @return
+     */
+    IPage<IhsFile> queryListPersonalFiles(Page<IhsFile> page, Integer id);
+
+    /**
+     * 分页获取个人文件列表 领导专用
+     * @param page
+     * @return
+     */
+    Map<String,List<IhsFile>> queryListOtherFiles(Page<IhsFile> page);
 
 
     /**
