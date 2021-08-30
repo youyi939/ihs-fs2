@@ -10,7 +10,6 @@ import com.hsgrjt.fushun.ihs.system.mapper.IhsFileMapper;
 import com.hsgrjt.fushun.ihs.system.service.IhsFileService;
 import com.hsgrjt.fushun.ihs.system.service.UserService;
 import com.hsgrjt.fushun.ihs.utils.V;
-import org.apache.ibatis.annotations.Mapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,66 +42,65 @@ public class IhsFileServiceImpl  implements IhsFileService {
 
     @Override
     public IPage<IhsFile> queryListPersonalFiles(Page<IhsFile> page, Integer id) {
-        QueryWrapper<IhsFile> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().eq(IhsFile::getCreateUserId,id);
-        queryWrapper.lambda().eq(IhsFile::getCategory,"个人文件");
-        return ihsFileMapper.selectPage(page,queryWrapper);
+        return selectPersonalList("个人文件",page,id);
     }
 
     @Override
     public Map<String,List<IhsFile>> queryListOtherFiles(Page<IhsFile> page) {
-        List<User> userList = userService.findAllUser();
-        Map<String,List<IhsFile>> map = new HashMap<String, List<IhsFile>>();
-        for (User user : userList) {
-            QueryWrapper<IhsFile> queryWrapper = new QueryWrapper<>();
-            queryWrapper.lambda().eq(IhsFile::getCategory,"个人文件").eq(IhsFile::getCreateUserId,user.getId());
-            List<IhsFile> fileList = ihsFileMapper.selectList(queryWrapper);
-            map.put(user.getUsername(),fileList);
-        }
-        return map;
+        return selectOtherFiles("个人文件");
     }
 
     @Override
     public IPage<IhsFile> queryListWeekPlan(Page<IhsFile> page, Integer id) {
-        QueryWrapper<IhsFile> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().eq(IhsFile::getCreateUserId,id);
-        queryWrapper.lambda().eq(IhsFile::getCategory,"周计划");
-        return ihsFileMapper.selectPage(page,queryWrapper);
+        return selectPersonalList("周计划",page,id);
     }
 
     @Override
     public Map<String, List<IhsFile>> queryListOtherWeekPlan() {
-        List<User> userList = userService.findAllUser();
-        Map<String,List<IhsFile>> map = new HashMap<String, List<IhsFile>>();
-        for (User user : userList) {
-            QueryWrapper<IhsFile> queryWrapper = new QueryWrapper<>();
-            queryWrapper.lambda().eq(IhsFile::getCategory,"周计划").eq(IhsFile::getCreateUserId,user.getId());
-            List<IhsFile> fileList = ihsFileMapper.selectList(queryWrapper);
-            map.put(user.getUsername(),fileList);
-        }
-        return map;
+        return selectOtherFiles("周计划");
     }
 
     @Override
     public IPage<IhsFile> queryListMonthPlan(Page<IhsFile> page, Integer id) {
-        QueryWrapper<IhsFile> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().eq(IhsFile::getCreateUserId,id);
-        queryWrapper.lambda().eq(IhsFile::getCategory,"月计划");
-        return ihsFileMapper.selectPage(page,queryWrapper);
+        return selectPersonalList("月计划",page,id);
     }
 
     @Override
     public Map<String, List<IhsFile>> queryListOtherMonthPlan() {
+        return selectOtherFiles("月计划");
+    }
+
+    /**
+     * 通用查询个人文件方法
+     * @param key
+     * @param page
+     * @param id
+     * @return
+     */
+    public IPage<IhsFile> selectPersonalList(String key, Page<IhsFile> page, Integer id){
+        QueryWrapper<IhsFile> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(IhsFile::getCreateUserId,id);
+        queryWrapper.lambda().eq(IhsFile::getCategory,key);
+        return ihsFileMapper.selectPage(page,queryWrapper);
+    }
+
+    /**
+     * 通用领导查询员工文件列表方法
+     * @param key
+     * @return
+     */
+    public Map<String, List<IhsFile>> selectOtherFiles(String key){
         List<User> userList = userService.findAllUser();
         Map<String,List<IhsFile>> map = new HashMap<String, List<IhsFile>>();
         for (User user : userList) {
             QueryWrapper<IhsFile> queryWrapper = new QueryWrapper<>();
-            queryWrapper.lambda().eq(IhsFile::getCategory,"月计划").eq(IhsFile::getCreateUserId,user.getId());
+            queryWrapper.lambda().eq(IhsFile::getCategory,key).eq(IhsFile::getCreateUserId,user.getId());
             List<IhsFile> fileList = ihsFileMapper.selectList(queryWrapper);
             map.put(user.getUsername(),fileList);
         }
         return map;
     }
+
 
     @Override
     public void save(IhsFileAddDTO entity) {
