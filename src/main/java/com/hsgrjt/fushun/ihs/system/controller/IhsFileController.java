@@ -83,4 +83,62 @@ public class IhsFileController {
 
 
 
+
+    //查询当前登陆人的周计划
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "current",value = "分页页数",dataType = "int",paramType = "query",required = true),
+            @ApiImplicitParam(name = "size",value = "每页数据条数",dataType = "int",paramType = "query",required = true)
+    })
+    @RequirePermission(Permissions.S_INIT)
+    @ApiOperation("分页查询当前登陆人 周计划记录列表")
+    @GetMapping(value = "/system/ihsFile/selectPage/weekPlan")
+    public R<Page<IhsFile>> selectUserPageWeekPlan(@RequestParam(name = "current") Integer current, @RequestParam(name = "size") Integer size, HttpServletRequest request){
+        User user = (User) request.getAttribute("ucm");
+        return R.ok("分页查询成功").putData( fileService.queryListWeekPlan(new Page<IhsFile>(current,size),user.getId()));
+    }
+
+
+    //领导专用 查询员工的周计划文件记录
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "current",value = "分页页数",dataType = "int",paramType = "query",required = true),
+            @ApiImplicitParam(name = "size",value = "每页数据条数",dataType = "int",paramType = "query",required = true)
+    })
+    @RequirePermission(Permissions.S_VIP)
+    @ApiOperation("分页查询其他人的 周计划文件记录列表")
+    @GetMapping(value = "/system/ihsFile/selectPage/otherWeekPlan")
+    public R<Page<IhsFile>> selectOtherWeekPlan( HttpServletRequest request){
+        User user = (User) request.getAttribute("ucm");
+        return R.ok("分页查询成功").putData( fileService.queryListOtherWeekPlan());
+    }
+
+
+    //查询当前登陆人的月计划
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "current",value = "分页页数",dataType = "int",paramType = "query",required = true),
+            @ApiImplicitParam(name = "size",value = "每页数据条数",dataType = "int",paramType = "query",required = true)
+    })
+    @RequirePermission(Permissions.S_INIT)
+    @ApiOperation("分页查询当前登陆人 月计划记录列表")
+    @GetMapping(value = "/system/ihsFile/selectPage/monthPlan")
+    public R<Page<IhsFile>> selectUserPageMonthPlan(@RequestParam(name = "current") Integer current, @RequestParam(name = "size") Integer size, HttpServletRequest request){
+        User user = (User) request.getAttribute("ucm");
+        return R.ok("分页查询成功").putData( fileService.queryListMonthPlan(new Page<IhsFile>(current,size),user.getId()));
+    }
+
+
+    //领导专用 查询员工的月计划文件记录
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "current",value = "分页页数",dataType = "int",paramType = "query",required = true),
+            @ApiImplicitParam(name = "size",value = "每页数据条数",dataType = "int",paramType = "query",required = true)
+    })
+    @RequirePermission(Permissions.S_VIP)
+    @ApiOperation("分页查询其他人的 月计划文件记录列表")
+    @GetMapping(value = "/system/ihsFile/selectPage/otherMonthPlan")
+    public R<Page<IhsFile>> selectOtherMonthPlan( HttpServletRequest request){
+        User user = (User) request.getAttribute("ucm");
+        return R.ok("分页查询成功").putData( fileService.queryListOtherMonthPlan());
+    }
+
+
+
 }

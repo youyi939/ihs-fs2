@@ -63,6 +63,48 @@ public class IhsFileServiceImpl  implements IhsFileService {
     }
 
     @Override
+    public IPage<IhsFile> queryListWeekPlan(Page<IhsFile> page, Integer id) {
+        QueryWrapper<IhsFile> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(IhsFile::getCreateUserId,id);
+        queryWrapper.lambda().eq(IhsFile::getCategory,"周计划");
+        return ihsFileMapper.selectPage(page,queryWrapper);
+    }
+
+    @Override
+    public Map<String, List<IhsFile>> queryListOtherWeekPlan() {
+        List<User> userList = userService.findAllUser();
+        Map<String,List<IhsFile>> map = new HashMap<String, List<IhsFile>>();
+        for (User user : userList) {
+            QueryWrapper<IhsFile> queryWrapper = new QueryWrapper<>();
+            queryWrapper.lambda().eq(IhsFile::getCategory,"周计划").eq(IhsFile::getCreateUserId,user.getId());
+            List<IhsFile> fileList = ihsFileMapper.selectList(queryWrapper);
+            map.put(user.getUsername(),fileList);
+        }
+        return map;
+    }
+
+    @Override
+    public IPage<IhsFile> queryListMonthPlan(Page<IhsFile> page, Integer id) {
+        QueryWrapper<IhsFile> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(IhsFile::getCreateUserId,id);
+        queryWrapper.lambda().eq(IhsFile::getCategory,"月计划");
+        return ihsFileMapper.selectPage(page,queryWrapper);
+    }
+
+    @Override
+    public Map<String, List<IhsFile>> queryListOtherMonthPlan() {
+        List<User> userList = userService.findAllUser();
+        Map<String,List<IhsFile>> map = new HashMap<String, List<IhsFile>>();
+        for (User user : userList) {
+            QueryWrapper<IhsFile> queryWrapper = new QueryWrapper<>();
+            queryWrapper.lambda().eq(IhsFile::getCategory,"月计划").eq(IhsFile::getCreateUserId,user.getId());
+            List<IhsFile> fileList = ihsFileMapper.selectList(queryWrapper);
+            map.put(user.getUsername(),fileList);
+        }
+        return map;
+    }
+
+    @Override
     public void save(IhsFileAddDTO entity) {
 
         IhsFile ihsFile  = new IhsFile();

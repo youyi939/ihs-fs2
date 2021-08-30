@@ -42,6 +42,42 @@ public interface IhsFileService  {
     Map<String,List<IhsFile>> queryListOtherFiles(Page<IhsFile> page);
 
 
+
+
+    /**
+     * 分页获取当前登陆人 "周计划"列表
+     * @param page
+     * @param id
+     * @return
+     */
+    IPage<IhsFile> queryListWeekPlan(Page<IhsFile> page, Integer id);
+
+
+    /**
+     * 分页获取周计划文件列表 领导专用
+     * @return
+     */
+    Map<String,List<IhsFile>> queryListOtherWeekPlan();
+
+
+
+    /**
+     * 分页获取当前登陆人 "月计划"列表
+     * @param page
+     * @param id
+     * @return
+     */
+    IPage<IhsFile> queryListMonthPlan(Page<IhsFile> page, Integer id);
+
+
+    /**
+     * 分页获取月计划文件列表 领导专用
+     * @return
+     */
+    Map<String,List<IhsFile>> queryListOtherMonthPlan();
+
+
+
     /**
      * 新建
      * @param entity
