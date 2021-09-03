@@ -57,7 +57,7 @@ public class HeatMachine implements Serializable {
 
     private String remark;
 
-    @Version
+//    @Version
     private String version;
 
     @TableLogic
