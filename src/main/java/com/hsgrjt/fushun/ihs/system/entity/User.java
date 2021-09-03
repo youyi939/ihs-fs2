@@ -114,7 +114,7 @@ public class User implements Serializable {
     private boolean deleteFlag;
 
     @ApiModelProperty(value = "必备字段乐观锁版本号")
-    @Version
+//    @Version
     private Integer version;
 
 }
