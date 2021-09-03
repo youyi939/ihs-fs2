@@ -107,9 +107,11 @@ public class User implements Serializable {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date gmtModified;
 
-    @ApiModelProperty(value = "必备字段逻辑删除标识")
+    /**
+     * 逻辑删除字段
+     */
     @TableLogic
-    private Integer deleted;
+    private boolean deleteFlag;
 
     @ApiModelProperty(value = "必备字段乐观锁版本号")
     @Version

@@ -23,8 +23,8 @@ public class MyBatisPlusConfig {
         return interceptor;
     }
 
-    @Bean
-    public OptimisticLockerInterceptor optimisticLockerInterceptor() {
-        return new OptimisticLockerInterceptor();
-    }
+//    @Bean
+//    public OptimisticLockerInterceptor optimisticLockerInterceptor() {
+//        return new OptimisticLockerInterceptor();
+//    }
 }
