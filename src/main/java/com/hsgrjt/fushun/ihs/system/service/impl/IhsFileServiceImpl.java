@@ -80,7 +80,7 @@ public class IhsFileServiceImpl  implements IhsFileService {
     public IPage<IhsFile> selectPersonalList(String key, Page<IhsFile> page, Integer id){
         QueryWrapper<IhsFile> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda().eq(IhsFile::getCreateUserId,id);
-        queryWrapper.lambda().eq(IhsFile::getCategory,key);
+        queryWrapper.lambda().eq(IhsFile::getCategory,key).orderByDesc(IhsFile::getGmtCreate);
         return ihsFileMapper.selectPage(page,queryWrapper);
     }
 
@@ -94,7 +94,7 @@ public class IhsFileServiceImpl  implements IhsFileService {
         Map<String,List<IhsFile>> map = new HashMap<String, List<IhsFile>>();
         for (User user : userList) {
             QueryWrapper<IhsFile> queryWrapper = new QueryWrapper<>();
-            queryWrapper.lambda().eq(IhsFile::getCategory,key).eq(IhsFile::getCreateUserId,user.getId());
+            queryWrapper.lambda().eq(IhsFile::getCategory,key).eq(IhsFile::getCreateUserId,user.getId()).orderByDesc(IhsFile::getGmtCreate);
             List<IhsFile> fileList = ihsFileMapper.selectList(queryWrapper);
             map.put(user.getUsername(),fileList);
         }

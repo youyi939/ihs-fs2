@@ -62,7 +62,6 @@ public class FileUploadController {
         System.out.println("**********************************"+apiResult.toString());
 
 
-
         IhsFileAddDTO ihsFileAddDTO = new IhsFileAddDTO();
         ihsFileAddDTO.setCategory(uploadKey);
         ihsFileAddDTO.setName(file.getOriginalFilename());            //文件名字
@@ -71,7 +70,6 @@ public class FileUploadController {
         ihsFileAddDTO.setUrl(apiResult.get("ossFileUrlBoot")+"");             //文件的完整url
         System.out.println();
         System.out.println(ihsFileAddDTO.toString());
-
 
         ihsFileService.save(ihsFileAddDTO);
 
