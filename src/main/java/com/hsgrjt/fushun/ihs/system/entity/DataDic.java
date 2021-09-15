@@ -22,9 +22,9 @@ import lombok.EqualsAndHashCode;
 @ApiModel(value="DataDic对象", description="")
 public class DataDic implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    @TableId(type = IdType.AUTO)
+    private Integer id;
 
-    @TableId(value = "data_item", type = IdType.NONE)
     private String dataItem;
 
     private String name;
@@ -32,6 +32,5 @@ public class DataDic implements Serializable {
     private Integer sortId;
 
     private String category;
-
 
 }
