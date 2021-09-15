@@ -7,12 +7,10 @@ import com.hsgrjt.fushun.ihs.system.service.GoodsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.server.PathParam;
+import java.util.List;
 
 /**
  * @Author: KenChen
@@ -45,9 +43,9 @@ public class GoodsController  {
 
 
     @ApiOperation(value="删除物料信息")
-    @PostMapping(value = "/system/goods/removeById/{id}")
-    public R updateById(@PathParam("id")Long id){
-        goodsService.removeById(id);
+    @PostMapping(value = "/system/goods/removeByIds")
+    public R updateByIds(@RequestParam("ids") List<Integer> ids){
+        goodsService.removeByIds(ids);
         return R.ok("删除数据成功");
     }
 

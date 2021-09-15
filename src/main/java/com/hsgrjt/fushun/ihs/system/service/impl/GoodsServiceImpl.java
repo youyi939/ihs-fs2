@@ -9,6 +9,8 @@ import com.hsgrjt.fushun.ihs.system.service.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @Author: KenChen
  * @Description:
@@ -31,8 +33,8 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
-    public void removeById(Long id) {
-        goodsMapper.deleteById(id);
+    public void removeByIds(List<Integer> ids) {
+        goodsMapper.deleteBatchIds(ids);
     }
 
     @Override

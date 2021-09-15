@@ -34,9 +34,9 @@ public interface GoodsService {
 
     /**
      * 移除物料
-     * @param id
+     * @param ids
      */
-    void removeById(Long id);
+    void removeByIds(List<Integer> ids);
 
     IPage<Goods> findByPage(Page<Goods> page);
 
