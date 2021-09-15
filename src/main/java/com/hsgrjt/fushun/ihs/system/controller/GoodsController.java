@@ -1,15 +1,19 @@
 package com.hsgrjt.fushun.ihs.system.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.hsgrjt.fushun.ihs.annotations.RequirePermission;
 import com.hsgrjt.fushun.ihs.system.entity.Goods;
+import com.hsgrjt.fushun.ihs.system.entity.Permission;
+import com.hsgrjt.fushun.ihs.system.entity.User;
 import com.hsgrjt.fushun.ihs.system.entity.vo.R;
 import com.hsgrjt.fushun.ihs.system.service.GoodsService;
+import com.hsgrjt.fushun.ihs.utils.Permissions;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -25,6 +29,7 @@ public class GoodsController  {
     GoodsService goodsService;
 
 
+    @RequirePermission(Permissions.S_AST)
     @ApiOperation(value="新增物料")
     @PostMapping(value = "/system/goods/save")
     public R save(@RequestBody Goods goods){
@@ -34,6 +39,7 @@ public class GoodsController  {
 
 
 
+    @RequirePermission(Permissions.S_AST)
     @ApiOperation(value="更新物料信息")
     @PostMapping(value = "/system/goods/updateById")
     public R updateById(@RequestBody Goods goods){
@@ -42,6 +48,7 @@ public class GoodsController  {
     }
 
 
+    @RequirePermission(Permissions.S_AST)
     @ApiOperation(value="删除物料信息")
     @PostMapping(value = "/system/goods/removeByIds")
     public R updateByIds(@RequestParam("ids") List<Integer> ids){
@@ -50,10 +57,11 @@ public class GoodsController  {
     }
 
 
-
+    @RequirePermission(Permissions.S_INIT)
     @ApiOperation(value="分页查询物料信息")
     @GetMapping(value = "/system/goods/findByPage")
-    public R updateById(int current,int size){
+    public R updateById(int current,int size, HttpServletRequest request){
+        User user = (User) request.getAttribute("ucm");
         return R.ok("分页查询数据成功").putData(goodsService.findByPage(new Page<>(current,size)));
     }
 

@@ -8,4 +8,5 @@ public abstract class Permissions {
     public static final String P_WD = "P_WD";               //周计划下载权限
     public static final String S_INIT = "S_INIT";           //基础权限
     public static final String S_VIP = "S_VIP";           //领导专用权限
+    public static final String S_AST = "S_AST";            //物料管理
 }

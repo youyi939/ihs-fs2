@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hsgrjt.fushun.ihs.system.entity.Goods;
+import com.hsgrjt.fushun.ihs.system.entity.IhsFile;
 import com.hsgrjt.fushun.ihs.system.mapper.GoodsMapper;
 import com.hsgrjt.fushun.ihs.system.service.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
