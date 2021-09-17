@@ -9,4 +9,6 @@ public abstract class Permissions {
     public static final String S_INIT = "S_INIT";           //基础权限
     public static final String S_VIP = "S_VIP";           //领导专用权限
     public static final String S_AST = "S_AST";            //物料管理
+    public static final String C_ADD = "C_ADD";            //责任成本录入
+    public static final String C_USE = "C_USE";            //责任成本录入
 }

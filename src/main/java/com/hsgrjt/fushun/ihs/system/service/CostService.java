@@ -2,48 +2,38 @@ package com.hsgrjt.fushun.ihs.system.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.hsgrjt.fushun.ihs.system.entity.Cost;
 import com.hsgrjt.fushun.ihs.system.entity.Goods;
-import com.hsgrjt.fushun.ihs.system.entity.IhsFile;
-import com.hsgrjt.fushun.ihs.system.entity.dto.IhsFileAddDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @Author: KenChen
- * @Description: 物料统计表service
+ * @Description: 责任成本
  * @Date: Create in  2021/8/22 下午4:27
  */
 @Service
-public interface GoodsService {
+public interface CostService {
 
     /**
-     * 新建物料
+     * 新建责任成本
      * @param entity
      */
-    void save(Goods entity);
-
-
-    /**
-     * 更新物料
-     * @param body
-     */
-    void updateById(Goods body);
-
+    void save(Cost entity);
 
     /**
-     * 移除物料
+     * 删除责任成本记录
      * @param ids
      */
     void removeByIds(List<Integer> ids);
 
+
     /**
-     * 分页查询物料信息
+     * 分页查询责任成本记录
      * @param page
      * @return
      */
-    IPage<Goods> findByPage(Page<Goods> page);
-
+    IPage<Cost> findByPage(Page<Cost> page);
 
 }
