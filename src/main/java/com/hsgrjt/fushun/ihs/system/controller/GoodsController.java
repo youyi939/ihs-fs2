@@ -51,7 +51,7 @@ public class GoodsController  {
     @RequirePermission(Permissions.S_AST)
     @ApiOperation(value="删除物料信息")
     @PostMapping(value = "/system/goods/removeByIds")
-    public R updateByIds(@RequestParam("ids") List<Integer> ids){
+    public R removeByIds(@RequestParam("ids") List<Integer> ids){
         goodsService.removeByIds(ids);
         return R.ok("删除数据成功");
     }
@@ -60,9 +60,16 @@ public class GoodsController  {
     @RequirePermission(Permissions.S_INIT)
     @ApiOperation(value="分页查询物料信息")
     @GetMapping(value = "/system/goods/findByPage")
-    public R updateById(int current,int size, HttpServletRequest request){
-        User user = (User) request.getAttribute("ucm");
+    public R findByPage(int current,int size){
         return R.ok("分页查询数据成功").putData(goodsService.findByPage(new Page<>(current,size)));
+    }
+
+
+    @RequirePermission(Permissions.S_INIT)
+    @ApiOperation(value="查询全部物料信息")
+    @GetMapping(value = "/system/goods/findAll")
+    public R<List<Goods>> findAll(){
+        return R.ok("查询数据成功").putData(goodsService.findAll());
     }
 
 

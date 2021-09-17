@@ -42,4 +42,9 @@ public class GoodsServiceImpl implements GoodsService {
     public IPage<Goods> findByPage(Page<Goods> page) {
         return goodsMapper.selectPage(page,new QueryWrapper<Goods>());
     }
+
+    @Override
+    public List<Goods> findAll() {
+        return goodsMapper.selectList(new QueryWrapper<Goods>());
+    }
 }

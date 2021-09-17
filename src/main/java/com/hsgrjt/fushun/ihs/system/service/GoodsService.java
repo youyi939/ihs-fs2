@@ -45,5 +45,10 @@ public interface GoodsService {
      */
     IPage<Goods> findByPage(Page<Goods> page);
 
+    /**
+     * 查询全部物料信息
+     * @return
+     */
+    List<Goods> findAll();
 
 }
