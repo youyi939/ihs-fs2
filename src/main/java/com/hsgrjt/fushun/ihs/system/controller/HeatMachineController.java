@@ -4,12 +4,14 @@ package com.hsgrjt.fushun.ihs.system.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.hsgrjt.fushun.ihs.annotations.RequirePermission;
 import com.hsgrjt.fushun.ihs.system.entity.HeatMachine;
+import com.hsgrjt.fushun.ihs.system.entity.User;
 import com.hsgrjt.fushun.ihs.system.service.HeatMachineService;
 import com.hsgrjt.fushun.ihs.utils.JsonMessage;
 import com.hsgrjt.fushun.ihs.utils.Permissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -98,6 +100,13 @@ public class HeatMachineController {
     @GetMapping("{id}")
     public HeatMachine getHeatMachineById(@PathVariable String id) {
         return heatMachineService.getById(id);
+    }
+
+    @RequirePermission(Permissions.S_INIT)
+    @GetMapping("selectMachineByUser")
+    public List<HeatMachine> selectMachineByUser(HttpServletRequest request) {
+        User user = (User) request.getAttribute("ucm");
+        return heatMachineService.selectMachineByUser(user.getAllowMachines());
     }
 
 }

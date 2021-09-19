@@ -6,9 +6,12 @@ import com.hsgrjt.fushun.ihs.system.service.HeatMachineService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * <p>
- *  服务实现类
+ *  机组服务实现类
  * </p>
  *
  * @author 晟翼科技
@@ -16,5 +19,16 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class HeatMachineServiceImpl extends ServiceImpl<HeatMachineMapper, HeatMachine> implements HeatMachineService {
+
+
+    @Override
+    public List<HeatMachine> selectMachineByUser(String ids) {
+        String[] temp = ids.split(",");
+        List<HeatMachine> machineList = new ArrayList<>();
+        for (String s : temp) {
+            machineList.add(baseMapper.selectById(s));
+        }
+        return machineList;
+    }
 
 }
