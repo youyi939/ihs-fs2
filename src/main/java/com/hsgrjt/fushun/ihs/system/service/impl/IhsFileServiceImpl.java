@@ -33,7 +33,6 @@ public class IhsFileServiceImpl  implements IhsFileService {
     @Override
     public IPage<IhsFile> queryList(Page<IhsFile> page, Integer id,String type) {
         QueryWrapper<IhsFile> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().eq(IhsFile::getCreateUserId,id);
         if (!V.isEmpty(type)){
             queryWrapper.lambda().eq(IhsFile::getCategory,type);
         }
