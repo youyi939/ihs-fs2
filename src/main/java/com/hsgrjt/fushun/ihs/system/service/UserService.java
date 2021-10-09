@@ -21,4 +21,7 @@ public interface UserService extends IService<User> {
 
     List<User> findAllUser();
 
+
+    Boolean isUserVip(Integer id);
+
 }

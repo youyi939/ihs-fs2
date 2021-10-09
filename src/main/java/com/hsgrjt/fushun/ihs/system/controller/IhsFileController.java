@@ -140,5 +140,13 @@ public class IhsFileController {
     }
 
 
+    @ApiOperation(value="删除一条文件记录")
+    @PostMapping(value = "/system/ihsFile/removeById")
+    public R removeByid(@RequestParam("id") Long id){
+        fileService.removeById(id);
+        return R.ok("删除数据成功");
+    }
+
+
 
 }

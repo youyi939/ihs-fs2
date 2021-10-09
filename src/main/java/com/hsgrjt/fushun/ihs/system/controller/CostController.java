@@ -6,6 +6,7 @@ import com.hsgrjt.fushun.ihs.annotations.RequirePermission;
 import com.hsgrjt.fushun.ihs.system.entity.Cost;
 import com.hsgrjt.fushun.ihs.system.entity.Goods;
 import com.hsgrjt.fushun.ihs.system.entity.User;
+import com.hsgrjt.fushun.ihs.system.entity.dto.CostDTO;
 import com.hsgrjt.fushun.ihs.system.entity.vo.R;
 import com.hsgrjt.fushun.ihs.system.service.CostService;
 import com.hsgrjt.fushun.ihs.utils.Permissions;
@@ -38,7 +39,7 @@ public class CostController {
     }
 
     @RequirePermission(Permissions.C_ADD)
-    @ApiOperation(value="删除物料信息")
+    @ApiOperation(value="删除责任成本记录")
     @PostMapping(value = "/system/cost/removeByIds")
     public R updateByIds(@RequestParam("ids") List<Integer> ids){
         costService.removeByIds(ids);
@@ -47,10 +48,11 @@ public class CostController {
 
 
     @RequirePermission(Permissions.C_USE)
-    @ApiOperation(value="分页查询责任成本信息")
-    @GetMapping(value = "/system/cost/findByPage")
-    public R<IPage<Cost>> updateById(int current, int size){
-        return R.ok("分页查询数据成功").putData(costService.findByPage(new Page<>(current,size)));
+    @ApiOperation(value="根据类型：维修/扩建   查询责任成本信息")
+    @GetMapping(value = "/system/cost/findCost")
+    public R<List<CostDTO>> findCost(String type,HttpServletRequest request){
+        User user = (User) request.getAttribute("ucm");
+        return R.ok("分页查询数据成功").putData(costService.findCost(type,user.getAllowMachines()));
     }
 
 }

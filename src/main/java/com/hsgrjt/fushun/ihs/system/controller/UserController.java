@@ -117,5 +117,10 @@ public class UserController {
         return JsonMessage.SUCCESS;
     }
 
+    @GetMapping("/isUserVip")
+    public Boolean isUserVip(@RequestParam ("id") Integer id){
+        return userService.isUserVip(id);
+    }
+
 }
 

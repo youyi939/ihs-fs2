@@ -17,5 +17,6 @@ public interface HeatMachineService extends IService<HeatMachine> {
 
     List<HeatMachine> selectMachineByUser(String ids);
 
+    HeatMachine findById(Integer id);
 
 }

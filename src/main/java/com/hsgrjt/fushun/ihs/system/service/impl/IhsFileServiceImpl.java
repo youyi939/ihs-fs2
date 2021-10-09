@@ -42,7 +42,11 @@ public class IhsFileServiceImpl  implements IhsFileService {
 
     @Override
     public IPage<IhsFile> queryListPersonalFiles(Page<IhsFile> page, Integer id) {
-        return selectPersonalList("个人文件",page,id);
+        QueryWrapper<IhsFile> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(IhsFile::getCreateUserId,id);
+//        queryWrapper.lambda().eq(IhsFile::getCategory,key).orderByDesc(IhsFile::getGmtCreate);
+        return ihsFileMapper.selectPage(page,queryWrapper);
+//        return selectPersonalList("个人文件",page,id);
     }
 
     @Override
@@ -121,7 +125,10 @@ public class IhsFileServiceImpl  implements IhsFileService {
 
     @Override
     public void removeById(Long id) {
-
+        ihsFileMapper.deleteById(id);
     }
+
+
+
 
 }

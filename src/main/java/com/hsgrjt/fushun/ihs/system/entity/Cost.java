@@ -32,4 +32,19 @@ public class Cost extends BaseEntity implements Serializable {
     @ApiModelProperty("描述")
     private String remark;
 
+    @ApiModelProperty("物料id")
+    private int goodsId;
+
+    @ApiModelProperty("类型：扩建/维修")
+    private String type;
+
+    @ApiModelProperty("机组id")
+    private int machineId;
+
+    @ApiModelProperty("机组名称")
+    private String machineName;
+
+    @ApiModelProperty("物料价格")
+    private double price;
+
 }

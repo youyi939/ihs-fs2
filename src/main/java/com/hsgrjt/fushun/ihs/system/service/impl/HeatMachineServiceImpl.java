@@ -31,4 +31,9 @@ public class HeatMachineServiceImpl extends ServiceImpl<HeatMachineMapper, HeatM
         return machineList;
     }
 
+    @Override
+    public HeatMachine findById(Integer id) {
+        return baseMapper.selectById(id);
+    }
+
 }

@@ -45,4 +45,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         return baseMapper.selectList(queryWrapper);
     }
+
+    @Override
+    public Boolean isUserVip(Integer id) {
+        User user = userMapper.selectById(id);
+        if (user.getPermission().contains("|S_VIP|")){
+            return true;
+        }else {
+            return false;
+        }
+    }
 }

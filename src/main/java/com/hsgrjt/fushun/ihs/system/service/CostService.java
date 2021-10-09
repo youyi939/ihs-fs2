@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hsgrjt.fushun.ihs.system.entity.Cost;
 import com.hsgrjt.fushun.ihs.system.entity.Goods;
+import com.hsgrjt.fushun.ihs.system.entity.dto.CostDTO;
+import com.hsgrjt.fushun.ihs.system.entity.vo.R;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,10 +32,9 @@ public interface CostService {
 
 
     /**
-     * 分页查询责任成本记录
-     * @param page
+     * 查询责任成本记录
      * @return
      */
-    IPage<Cost> findByPage(Page<Cost> page);
+    R<List<CostDTO>> findCost(String type, String ids);
 
 }
