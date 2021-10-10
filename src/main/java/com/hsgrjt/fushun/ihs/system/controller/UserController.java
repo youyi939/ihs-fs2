@@ -118,8 +118,8 @@ public class UserController {
     }
 
     @GetMapping("/isUserVip")
-    public Boolean isUserVip(@RequestParam ("id") Integer id){
-        return userService.isUserVip(id);
+    public Boolean isUserVip(@RequestParam ("id") Integer id,@RequestParam("type")String type){
+        return userService.isUserVip(id,type);
     }
 
 }

@@ -47,9 +47,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public Boolean isUserVip(Integer id) {
+    public Boolean isUserVip(Integer id,String type) {
         User user = userMapper.selectById(id);
-        if (user.getPermission().contains("|S_VIP|")){
+        if (user.getPermission().contains("|"+type+"|")){
             return true;
         }else {
             return false;

@@ -37,12 +37,12 @@ public class IhsFileController {
         return R.ok("插入数据成功");
     }
 
-    @RequirePermission(Permissions.F_CP)
+//    @RequirePermission(Permissions.F_CP)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "current",value = "分页页数",dataType = "int",paramType = "query",required = true),
             @ApiImplicitParam(name = "size",value = "每页数据条数",dataType = "int",paramType = "query",required = true)
     })
-    @ApiOperation("分页查询文件记录列表")
+    @ApiOperation("分页查询文件记录列表,用于六边形按钮哪个文件列表的查询")
     @GetMapping(value = "/system/ihsFile/selectPage")
     public R<Page<IhsFile>> selectUserPage(
             @RequestParam(name = "current") Integer current,
