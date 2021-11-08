@@ -94,7 +94,7 @@ public class HeatNetworkDataServiceImpl implements HeatNetworkDataService {
         machineQueryWrapper.lambda().eq(HeatMachine::getCompany,company);
         List<HeatMachine>  machineList = machineMapper.selectList(machineQueryWrapper);
 
-        List<HeatNetworkData> heatNetworkDataList = new ArrayList<>();
+        List<HeatNetworkDataDTO> heatNetworkDataList = new ArrayList<>();
 
 
         for (HeatMachine heatMachine : machineList) {
@@ -102,10 +102,16 @@ public class HeatNetworkDataServiceImpl implements HeatNetworkDataService {
             QueryWrapper<HeatNetworkData> heatNetworkDataQueryWrapper = new QueryWrapper<>();
             heatNetworkDataQueryWrapper.lambda().orderByDesc(HeatNetworkData::getGmtCreate).last("limit 1").eq(HeatNetworkData::getStationId,heatMachine.getId());
             HeatNetworkData data = mapper.selectOne(heatNetworkDataQueryWrapper);
-            heatNetworkDataList.add(data);
+            HeatNetworkDataDTO dto = new HeatNetworkDataDTO();
+            BeanUtils.copyProperties(data,dto);
+            //set机组名称
+            dto.setStationName(heatMachine.getName());
+            //格式化时间
+            Date dNow = data.getGmtCreate();
+            SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd hh:mm:ss");
+            dto.setCreateDate(ft.format(dNow));
+            heatNetworkDataList.add(dto);
         }
-
-
 
 
         return R.ok("查询成功").putData(heatNetworkDataList);
