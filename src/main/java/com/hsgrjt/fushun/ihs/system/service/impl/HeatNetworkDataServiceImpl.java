@@ -56,9 +56,7 @@ public class HeatNetworkDataServiceImpl implements HeatNetworkDataService {
         queryWrapper.lambda().eq(HeatNetworkData::getStationId,heatMachine.getId());
         List<HeatNetworkData> dataList = mapper.selectPage(page,queryWrapper).getRecords();
 
-
         List<HeatNetworkDataDTO> dataDTOList = new ArrayList<>();
-
 
         for (int i = 0; i < dataList.size() ; i++) {
             HeatNetworkDataDTO dto = new HeatNetworkDataDTO();
@@ -89,8 +87,6 @@ public class HeatNetworkDataServiceImpl implements HeatNetworkDataService {
 
     @Override
     public R<HeatNetworkDataDTO> selectByRealTime(String company) {
-        // TODO: 2021/11/8 先查询当前公司的机组列表，然后在机组数据表中筛选当前机组列表中的数据。然后创建时间倒叙，第一个
-
         //获取当前公司的机组数据
         QueryWrapper<HeatMachine> machineQueryWrapper = new QueryWrapper<>();
         machineQueryWrapper.lambda().eq(HeatMachine::getCompany,company);
@@ -193,6 +189,37 @@ public class HeatNetworkDataServiceImpl implements HeatNetworkDataService {
 
         return Double.parseDouble(nf.format(d));
     }
+
+    /**
+     * 查询当前机组的近五十条记录，用于折线图
+     * @param stationId 机组id
+     * @return 机组dto的集合
+     */
+    @Override
+    public R<List<HeatNetworkDataDTO>> selectHeatDataHistory(Integer stationId) {
+        HeatMachine machine = machineMapper.selectById(stationId);
+
+        QueryWrapper<HeatNetworkData> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(HeatNetworkData::getStationId,stationId).orderByDesc(HeatNetworkData::getGmtCreate).last("limit 50");
+        List<HeatNetworkData> dataList = mapper.selectList(queryWrapper);
+        List<HeatNetworkDataDTO> dataDTOList = new ArrayList<>();
+        for (HeatNetworkData data : dataList) {
+            HeatNetworkDataDTO dto = new HeatNetworkDataDTO();
+            BeanUtils.copyProperties(data,dto);
+            dto.setStationName(machine.getName());
+            //格式化时间
+            Date dNow = data.getGmtCreate();
+            SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd hh:mm:ss");
+            dto.setCreateDate(ft.format(dNow));
+            dto = initData(dto);
+            dataDTOList.add(dto);
+        }
+
+        return R.ok("查询成功").putData(dataDTOList);
+    }
+
+
+
 
 
 }

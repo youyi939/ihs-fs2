@@ -3,11 +3,11 @@ package com.hsgrjt.fushun.ihs.system.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hsgrjt.fushun.ihs.system.entity.HeatNetworkData;
-import com.hsgrjt.fushun.ihs.system.entity.IhsFile;
 import com.hsgrjt.fushun.ihs.system.entity.dto.HeatNetworkDataDTO;
 import com.hsgrjt.fushun.ihs.system.entity.vo.R;
 import com.hsgrjt.fushun.ihs.system.service.HeatNetworkDataService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -46,11 +46,20 @@ public class HeatNetworkDataController {
     }
 
 
-
+    @ApiImplicitParam(name = "company",value = "公司名称",dataType = "string",paramType = "query",required = true)
     @ApiOperation(value="查询机组的实时数据（一般为五分钟更新一次）")
     @GetMapping("/system/networkData/selectByRealTime")
     public R<HeatNetworkDataDTO> selectByRealTime(@RequestParam(name = "company") String company){
         return service.selectByRealTime(company);
     }
+
+
+    @ApiImplicitParam(name = "company",value = "公司名称",dataType = "string",paramType = "query",required = true)
+    @ApiOperation(value="查询机组的历史数据（查询当前机组的近五十条数据，用于折线图）")
+    @GetMapping("/system/networkData/selectHeatDataHistory")
+    public R<List<HeatNetworkDataDTO>> selectHeatDataHistory(@RequestParam(name = "stationId") Integer stationId){
+        return service.selectHeatDataHistory(stationId);
+    }
+
 
 }

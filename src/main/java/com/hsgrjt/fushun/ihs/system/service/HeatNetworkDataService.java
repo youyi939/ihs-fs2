@@ -19,11 +19,28 @@ import java.util.List;
 public interface HeatNetworkDataService {
 
 
+    /**
+     * 早期测试接口
+     * @param start
+     * @param end
+     * @return
+     */
     R<List<HeatNetworkData>> selectByTime(Data start,Data end);
 
 
+    /**
+     * 早期测试接口
+     * @param page
+     * @param machineName
+     * @return
+     */
     R<IPage<HeatNetworkDataDTO>> findAll(Page<HeatNetworkData> page, String machineName);
 
+    /**
+     * 添加机组数据
+     * @param data
+     * @return
+     */
     R<HeatNetworkData> add(HeatNetworkData data);
 
     /**
@@ -31,5 +48,12 @@ public interface HeatNetworkDataService {
      * @return 返回单条数据
      */
     R<HeatNetworkDataDTO> selectByRealTime(String company);
+
+
+    /**
+     * 查询某个机组的历史数据（暂定查询最新时间往下50条记录）
+     * @return 机组数据集合
+     */
+    R<List<HeatNetworkDataDTO>> selectHeatDataHistory(Integer stationId);
 
 }
