@@ -2,15 +2,20 @@ package com.hsgrjt.fushun.ihs.system.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.hsgrjt.fushun.ihs.annotations.RequirePermission;
 import com.hsgrjt.fushun.ihs.system.entity.HeatNetworkData;
+import com.hsgrjt.fushun.ihs.system.entity.User;
 import com.hsgrjt.fushun.ihs.system.entity.dto.HeatNetworkDataDTO;
 import com.hsgrjt.fushun.ihs.system.entity.vo.R;
 import com.hsgrjt.fushun.ihs.system.service.HeatNetworkDataService;
+import com.hsgrjt.fushun.ihs.utils.Permissions;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.crypto.Data;
 import java.util.List;
 
@@ -46,11 +51,12 @@ public class HeatNetworkDataController {
     }
 
 
-    @ApiImplicitParam(name = "company",value = "公司名称",dataType = "string",paramType = "query",required = true)
+    @RequirePermission(Permissions.S_INIT)
     @ApiOperation(value="查询机组的实时数据（一般为五分钟更新一次）")
     @GetMapping("/system/networkData/selectByRealTime")
-    public R<HeatNetworkDataDTO> selectByRealTime(@RequestParam(name = "company") String company){
-        return service.selectByRealTime(company);
+    public R<HeatNetworkDataDTO> selectByRealTime( HttpServletRequest request){
+        User user = (User) request.getAttribute("ucm");
+        return service.selectByRealTime(user.getAllowCompanys());
     }
 
 
