@@ -24,4 +24,6 @@ public interface UserService extends IService<User> {
 
     Boolean isUserVip(Integer id,String type);
 
+    User selectById(Integer id);
+
 }

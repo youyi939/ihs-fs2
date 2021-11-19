@@ -3,6 +3,7 @@ package com.hsgrjt.fushun.ihs.system.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hsgrjt.fushun.ihs.system.entity.IhsFile;
+import com.hsgrjt.fushun.ihs.system.entity.User;
 import com.hsgrjt.fushun.ihs.system.entity.dto.IhsFileAddDTO;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +24,7 @@ public interface IhsFileService  {
      * @param id
      * @return
      */
-    IPage<IhsFile> queryList(Page<IhsFile> page, Integer id,String type);
+    IPage<IhsFile> queryList(Page<IhsFile> page, Integer id, String type, User user);
 
 
     /**
@@ -82,7 +83,7 @@ public interface IhsFileService  {
      * 新建
      * @param entity
      */
-    void save(IhsFileAddDTO entity);
+    void save(IhsFileAddDTO entity,String company);
 
     /**
      * 更新字典

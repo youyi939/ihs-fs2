@@ -55,4 +55,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             return false;
         }
     }
+
+    @Override
+    public User selectById(Integer id) {
+        return userMapper.selectById(id);
+    }
 }

@@ -26,4 +26,7 @@ public class IhsFileAddDTO {
 
     @ApiModelProperty("共享给那些用户ID")
     private String shareToUsers;
+
+    @ApiModelProperty("可访问的公司（逗号分隔，空表示都可以访问）")
+    private String allowCompanys;;
 }

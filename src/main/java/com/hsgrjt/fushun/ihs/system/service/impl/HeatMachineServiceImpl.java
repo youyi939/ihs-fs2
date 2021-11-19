@@ -1,6 +1,8 @@
 package com.hsgrjt.fushun.ihs.system.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.hsgrjt.fushun.ihs.system.entity.HeatMachine;
+import com.hsgrjt.fushun.ihs.system.entity.User;
 import com.hsgrjt.fushun.ihs.system.mapper.HeatMachineMapper;
 import com.hsgrjt.fushun.ihs.system.service.HeatMachineService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -34,6 +36,13 @@ public class HeatMachineServiceImpl extends ServiceImpl<HeatMachineMapper, HeatM
     @Override
     public HeatMachine findById(Integer id) {
         return baseMapper.selectById(id);
+    }
+
+    @Override
+    public List<HeatMachine> getMachineByUser(User user) {
+        QueryWrapper<HeatMachine> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(HeatMachine::getCompany,user.getAllowCompanys());
+        return baseMapper.selectList(queryWrapper);
     }
 
 }

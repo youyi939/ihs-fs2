@@ -60,9 +60,11 @@ public class HeatMachineController {
         }
     }
 
+    @RequirePermission(Permissions.S_INIT)
     @GetMapping("all")
-    public List<HeatMachine> getAllHeatMachine() {
-        return heatMachineService.list();
+    public List<HeatMachine> getAllHeatMachine(HttpServletRequest request) {
+        User user = (User) request.getAttribute("ucm");
+        return heatMachineService.getMachineByUser(user);
     }
 
     @GetMapping("company/{company}")

@@ -31,10 +31,15 @@ public class IhsFileServiceImpl  implements IhsFileService {
     UserService userService;
 
     @Override
-    public IPage<IhsFile> queryList(Page<IhsFile> page, Integer id,String type) {
+    public IPage<IhsFile> queryList(Page<IhsFile> page, Integer id,String type,User user) {
         QueryWrapper<IhsFile> queryWrapper = new QueryWrapper<>();
         if (!V.isEmpty(type)){
-            queryWrapper.lambda().eq(IhsFile::getCategory,type);
+            //获取调用者的公司
+            String company = user.getAllowCompanys();
+            queryWrapper.lambda().eq(IhsFile::getCategory,type).eq(IhsFile::getAllowCompanys,company);
+            if (type.equals("个人文件")){
+                queryWrapper.lambda().eq(IhsFile::getCreateUserId,user.getId());
+            }
         }
         return ihsFileMapper.selectPage(page,queryWrapper);
     }
@@ -43,9 +48,7 @@ public class IhsFileServiceImpl  implements IhsFileService {
     public IPage<IhsFile> queryListPersonalFiles(Page<IhsFile> page, Integer id) {
         QueryWrapper<IhsFile> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda().eq(IhsFile::getCreateUserId,id);
-//        queryWrapper.lambda().eq(IhsFile::getCategory,key).orderByDesc(IhsFile::getGmtCreate);
         return ihsFileMapper.selectPage(page,queryWrapper);
-//        return selectPersonalList("个人文件",page,id);
     }
 
     @Override
@@ -106,13 +109,17 @@ public class IhsFileServiceImpl  implements IhsFileService {
 
 
     @Override
-    public void save(IhsFileAddDTO entity) {
+    public void save(IhsFileAddDTO entity,String company) {
 
         IhsFile ihsFile  = new IhsFile();
         BeanUtils.copyProperties(entity,ihsFile);
 
         ihsFile.setGmtCreate(new Date());
         ihsFile.setGmtModified(new Date());
+        ihsFile.setAllowCompanys(company);
+
+        System.out.println("&&&&&&&&&&&&&&&&！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！:"
+                +ihsFile.getAllowCompanys());
 
        ihsFileMapper.insert(ihsFile);
     }

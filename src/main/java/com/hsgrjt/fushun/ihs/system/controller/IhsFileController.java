@@ -31,13 +31,23 @@ public class IhsFileController {
     IhsFileService fileService;
 
     @ApiOperation(value="新增一条文件记录")
+    @RequirePermission(Permissions.S_INIT)
     @PostMapping(value = "/system/ihsFile/save")
-    public R save(@RequestBody IhsFileAddDTO ihsFileAddDTO){
-        fileService.save(ihsFileAddDTO);
+    public R save(@RequestBody IhsFileAddDTO ihsFileAddDTO,HttpServletRequest request){
+        User user = (User) request.getAttribute("ucm");
+        fileService.save(ihsFileAddDTO,user.getAllowCompanys());
         return R.ok("插入数据成功");
     }
 
-//    @RequirePermission(Permissions.F_CP)
+    /**
+     * 文件查看接口
+     * @param current
+     * @param size
+     * @param id
+     * @param type
+     * @return
+     */
+    @RequirePermission(Permissions.S_INIT)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "current",value = "分页页数",dataType = "int",paramType = "query",required = true),
             @ApiImplicitParam(name = "size",value = "每页数据条数",dataType = "int",paramType = "query",required = true)
@@ -48,8 +58,10 @@ public class IhsFileController {
             @RequestParam(name = "current") Integer current,
             @RequestParam(name = "size") Integer size,
             @RequestParam(name = "id") Integer id,          //当前登陆人的id
-            @RequestParam(name = "type",required = false)String type){
-        return R.ok("分页查询成功").putData( fileService.queryList(new Page<IhsFile>(current,size),id,type));
+            @RequestParam(name = "type",required = false)String type,
+            HttpServletRequest request){
+        User user = (User) request.getAttribute("ucm");
+        return R.ok("分页查询成功").putData( fileService.queryList(new Page<IhsFile>(current,size),id,type,user));
     }
 
 
