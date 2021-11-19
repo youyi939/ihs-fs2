@@ -90,16 +90,20 @@ public class HeatNetworkDataServiceImpl implements HeatNetworkDataService {
         //获取当前公司的机组数据
         QueryWrapper<HeatMachine> machineQueryWrapper = new QueryWrapper<>();
         machineQueryWrapper.lambda().eq(HeatMachine::getCompany,company);
-        List<HeatMachine>  machineList = machineMapper.selectList(machineQueryWrapper);
 
+        //获取机组list
+        List<HeatMachine>  machineList = machineMapper.selectList(machineQueryWrapper);
+        //dto的list
         List<HeatNetworkDataDTO> heatNetworkDataList = new ArrayList<>();
 
 
         for (HeatMachine heatMachine : machineList) {
-            System.out.println(heatMachine.getId());
-            QueryWrapper<HeatNetworkData> heatNetworkDataQueryWrapper = new QueryWrapper<>();
-            heatNetworkDataQueryWrapper.lambda().orderByDesc(HeatNetworkData::getGmtCreate).last("limit 1").eq(HeatNetworkData::getStationId,heatMachine.getId());
-            HeatNetworkData data = mapper.selectOne(heatNetworkDataQueryWrapper);
+            //拼接sql：根据时间倒序的最后一个截取，机组ID相对应
+//            QueryWrapper<HeatNetworkData> heatNetworkDataQueryWrapper = new QueryWrapper<>();
+//            heatNetworkDataQueryWrapper.lambda().orderByDesc(HeatNetworkData::getGmtCreate).last("limit 1").eq(HeatNetworkData::getStationId,heatMachine.getId());
+//            HeatNetworkData data = mapper.selectOne(heatNetworkDataQueryWrapper);
+            HeatNetworkData data = mapper.selectData(heatMachine.getId());
+
             HeatNetworkDataDTO dto = new HeatNetworkDataDTO();
             BeanUtils.copyProperties(data,dto);
             //set机组名称
@@ -210,7 +214,7 @@ public class HeatNetworkDataServiceImpl implements HeatNetworkDataService {
             //格式化时间
             Date dNow = data.getGmtCreate();
             SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd hh:mm:ss");
-            dto.setCreateDate(ft.format(dNow));
+            dto.setCreateDate(ft.format(dNow.getTime()));
             dto = initData(dto);
             dataDTOList.add(dto);
         }

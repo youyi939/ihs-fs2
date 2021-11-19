@@ -6,7 +6,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: ihs
     password: admin@123456!
-    url: jdbc:mysql://rds.unv.ink:3306/huashun-ihs?useSSL=true&useUnicode=true&characterEncoding=utf8&serverTimezone=UTC%2B8
+    url: jdbc:mysql://rds.unv.ink:3306/huashun-ihs?useSSL=true&useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
   jackson:
     generator:
       write_numbers_as_strings: true
