@@ -23,6 +23,31 @@ import java.util.List;
 public class HeatMachineServiceImpl extends ServiceImpl<HeatMachineMapper, HeatMachine> implements HeatMachineService {
 
 
+
+
+    @Override
+    public HeatMachine findById(Integer id) {
+        return baseMapper.selectById(id);
+    }
+
+    /**
+     * 获取用户所在公司的所有机组
+     * @param user
+     * @return
+     */
+    @Override
+    public List<HeatMachine> getMachineByUser(User user) {
+
+        QueryWrapper<HeatMachine> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(HeatMachine::getCompany,user.getAllowCompanys());
+        return baseMapper.selectList(queryWrapper);
+    }
+
+    /**
+     * 查询用户有管辖权的机组列表
+     * @param ids user.getAllowMachines()字段
+     * @return 机组list
+     */
     @Override
     public List<HeatMachine> selectMachineByUser(String ids) {
         String[] temp = ids.split(",");
@@ -31,18 +56,6 @@ public class HeatMachineServiceImpl extends ServiceImpl<HeatMachineMapper, HeatM
             machineList.add(baseMapper.selectById(s));
         }
         return machineList;
-    }
-
-    @Override
-    public HeatMachine findById(Integer id) {
-        return baseMapper.selectById(id);
-    }
-
-    @Override
-    public List<HeatMachine> getMachineByUser(User user) {
-        QueryWrapper<HeatMachine> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().eq(HeatMachine::getCompany,user.getAllowCompanys());
-        return baseMapper.selectList(queryWrapper);
     }
 
 }

@@ -38,9 +38,7 @@ public class HeatNetworkDataController {
 
     @ApiOperation(value="查询全部机组数据")
     @GetMapping("/system/networkData/findAll")
-    public R<IPage<HeatNetworkDataDTO>> findAll(@RequestParam(name = "current") Integer current,
-                                                @RequestParam(name = "size") Integer size,
-                                                @RequestParam(name = "name") String name){
+    public R<IPage<HeatNetworkDataDTO>> findAll(@RequestParam(name = "current") Integer current, @RequestParam(name = "size") Integer size, @RequestParam(name = "name") String name){
         return service.findAll(new Page<HeatNetworkData>(current,size),name);
     }
 
@@ -52,7 +50,7 @@ public class HeatNetworkDataController {
 
 
     @RequirePermission(Permissions.S_INIT)
-    @ApiOperation(value="查询机组的实时数据（一般为五分钟更新一次）")
+    @ApiOperation(value="查询机组的实时数据（一般为五分钟更新一次，用于实时数据查看）")
     @GetMapping("/system/networkData/selectByRealTime")
     public R<HeatNetworkDataDTO> selectByRealTime( HttpServletRequest request){
         User user = (User) request.getAttribute("ucm");
@@ -60,7 +58,7 @@ public class HeatNetworkDataController {
     }
 
 
-    @ApiImplicitParam(name = "company",value = "公司名称",dataType = "string",paramType = "query",required = true)
+    @ApiImplicitParam(name = "stationId",value = "机组id",dataType = "int",paramType = "query",required = true)
     @ApiOperation(value="查询机组的历史数据（查询当前机组的近五十条数据，用于折线图）")
     @GetMapping("/system/networkData/selectHeatDataHistory")
     public R<List<HeatNetworkDataDTO>> selectHeatDataHistory(@RequestParam(name = "stationId") Integer stationId){

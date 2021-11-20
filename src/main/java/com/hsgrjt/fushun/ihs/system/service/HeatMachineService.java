@@ -21,7 +21,7 @@ public interface HeatMachineService extends IService<HeatMachine> {
     HeatMachine findById(Integer id);
 
     /**
-     * 根据用户查询用户可管理都公司下的机组
+     * 根据用户查询用户公司下的机组
      * @return
      */
     List<HeatMachine> getMachineByUser(User user);

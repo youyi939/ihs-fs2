@@ -42,4 +42,7 @@ public class MeterStaff {
     @ApiModelProperty("数据插入时间")
     private Date gmtCreate;
 
+    @ApiModelProperty("中心站的名字")
+    private String centerStation;
+
 }
