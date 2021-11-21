@@ -51,7 +51,7 @@ public class MeterStaffController {
     @GetMapping("/system/meter/getDayFromWater")
     public R getDayFromWater(HttpServletRequest request){
         User user = (User) request.getAttribute("ucm");
-        return R.ok("查询成功");
+        return staffService.getDayFromWater(user);
     }
 
 

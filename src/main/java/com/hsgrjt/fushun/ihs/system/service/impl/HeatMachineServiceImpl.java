@@ -43,6 +43,18 @@ public class HeatMachineServiceImpl extends ServiceImpl<HeatMachineMapper, HeatM
         return baseMapper.selectList(queryWrapper);
     }
 
+    @Override
+    public List<String> getCenterStation(String company) {
+        return baseMapper.getCenterStation(company);
+    }
+
+    @Override
+    public List<HeatMachine> getMachineByCenterStation(String centerStation) {
+        QueryWrapper<HeatMachine> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(HeatMachine::getCenterStation,centerStation);
+        return baseMapper.selectList(queryWrapper);
+    }
+
     /**
      * 查询用户有管辖权的机组列表
      * @param ids user.getAllowMachines()字段

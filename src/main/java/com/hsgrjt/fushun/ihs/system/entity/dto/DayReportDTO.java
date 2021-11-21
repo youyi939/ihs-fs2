@@ -16,12 +16,18 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DayReportDTO {
+public class DayReportDTO{
 
     @ApiModelProperty("机组名字")
     private String stationName;
 
     @ApiModelProperty("该中心站下的机组的水电热数据")
     private List<MeterData> meterDataList;
+
+    @ApiModelProperty("合计")
+    private double sum;
+
+
+
 
 }
