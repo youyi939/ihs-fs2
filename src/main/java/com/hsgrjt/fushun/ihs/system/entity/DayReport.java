@@ -26,4 +26,7 @@ public class DayReport {
     @ApiModelProperty("中心站下的机组数据")
     private List<DayReportDTO> dtoList;
 
+    @ApiModelProperty("小记，即使当天所有换热站的数值数值加在一起，区分中心站")
+    private List<ReportData> machineDataSum;
+
 }

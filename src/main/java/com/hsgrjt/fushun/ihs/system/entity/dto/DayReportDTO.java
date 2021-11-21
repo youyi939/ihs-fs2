@@ -24,10 +24,7 @@ public class DayReportDTO{
     @ApiModelProperty("该中心站下的机组的水电热数据")
     private List<MeterData> meterDataList;
 
-    @ApiModelProperty("合计")
-    private double sum;
-
-
-
+    @ApiModelProperty("合计,也就是当前机组的所有日期的数")
+    private double bigSum;
 
 }

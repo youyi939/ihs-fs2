@@ -95,10 +95,11 @@ public class MeterStaffServiceImpl implements MeterStaffService {
             //获得机组的水电热数据
             getMachineMeterStaffData(meterDataDTOList, machineList, "水");
 
-            //计算数据过程
+            //计算数据过程---只计算基础数据和合计等单机组合计数据
             for (int i = 0; i < meterDataDTOList.size(); i++) {
                 System.out.println("\033[31;4m" + meterDataDTOList.get(i).toString() + "\033[0m");
                 DayReportDTO dto = new DayReportDTO();
+                double bigSum = 0;
                 dto.setStationName(meterDataDTOList.get(i).getStationName());
                 List<MeterData> sourceData = meterDataDTOList.get(i).getMeterDataList();
                 List<MeterData> targetdata = new ArrayList<>();
@@ -106,15 +107,39 @@ public class MeterStaffServiceImpl implements MeterStaffService {
                     MeterData meterData = new MeterData();
                     meterData.setTime(sourceData.get(j).getTime());
                     //避免月底的情况，数组越界。月底单独获取，单独计算
-                    if (j < sourceData.size()-1) {
-                        meterData.setData(sourceData.get(j + 1).getData() - sourceData.get(j).getData());
+                    if (j < sourceData.size() - 1) {
+                        double data = sourceData.get(j + 1).getData() - sourceData.get(j).getData();
+                        meterData.setData(data);
+                        bigSum += data;
                         targetdata.add(meterData);
                     }
                 }
                 dto.setMeterDataList(targetdata);
+                dto.setBigSum(bigSum);
                 dtoList.add(dto);
             }
 
+
+            //计算数据过程---计算小记、结余等多机组合计数据
+            List<ReportData> reportDataList = new ArrayList<>();
+            //因为所有机组每天都会上传水电热数据，所以默认每个机组下的水电热数据条数是一样的，不要忘记判空就好,循环次数是本月有记录的天数
+            for (int i = 0; i < dtoList.get(0).getMeterDataList().size(); i++) {
+                ReportData reportData = new ReportData();
+
+                //开始循环计算小记
+                double smallSum = 0;
+                for (int j = 0; j < dtoList.size(); j++) {
+                    //防止数组越界
+                    if (dtoList.get(j).getMeterDataList().size() > i) {
+                        smallSum += dtoList.get(j).getMeterDataList().get(i).getData();
+                    }
+                }
+                //设置时间
+                reportData.setTime(dtoList.get(0).getMeterDataList().get(i).getTime());
+                reportData.setSamllData(smallSum);
+                reportDataList.add(reportData);
+            }
+            dayReport.setMachineDataSum(reportDataList);
             dayReport.setDtoList(dtoList);
             dayReportList.add(dayReport);
         }
