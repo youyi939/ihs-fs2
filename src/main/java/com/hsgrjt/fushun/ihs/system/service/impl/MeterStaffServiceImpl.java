@@ -5,6 +5,7 @@ import com.hsgrjt.fushun.ihs.system.entity.*;
 import com.hsgrjt.fushun.ihs.system.entity.dto.MeterDataDTO;
 import com.hsgrjt.fushun.ihs.system.entity.dto.MeterStaffAddDTO;
 import com.hsgrjt.fushun.ihs.system.entity.vo.R;
+import com.hsgrjt.fushun.ihs.system.mapper.HeatMachineMapper;
 import com.hsgrjt.fushun.ihs.system.mapper.MeterStaffMapper;
 import com.hsgrjt.fushun.ihs.system.service.HeatMachineService;
 import com.hsgrjt.fushun.ihs.system.service.MeterStaffService;
@@ -35,6 +36,9 @@ public class MeterStaffServiceImpl implements MeterStaffService {
     @Autowired
     HeatMachineService machineService;
 
+    @Autowired
+    HeatMachineMapper machineMapper;
+
     @Override
     public void save(MeterStaffAddDTO dto) {
         MeterStaff entity = new MeterStaff();
@@ -50,12 +54,45 @@ public class MeterStaffServiceImpl implements MeterStaffService {
 
     @Override
     public R<List<MeterDataDTO>> findAll(User user,String type) {
-        //获取用户能管辖的机组列表
+        //获取用户所在公司下的机组列表
         List<HeatMachine> machineList = machineService.getMachineByUser(user);
 
         //该方法返回的数据dto
         List<MeterDataDTO> meterDataDTOList = new ArrayList<>();
 
+        //调用方法，传入dto集合，机组集合，数据类型，即可获得这些机组下的某种类型的数据
+        getMachineMeterStaffData(meterDataDTOList, machineList, type);
+
+        return R.ok("查询成功").putData(meterDataDTOList);
+    }
+
+
+    /**
+     * 查看日报表
+     * @param user
+     * @return
+     */
+    @Override
+    public R<List<DayReport>> getDayFromWater(User user) {
+        //查询当前公司下共有几个中心站
+
+
+
+
+
+
+        return null;
+    }
+
+
+    /**
+     * 封装的获取机组下的水电热数据的方法
+     * @param meterDataDTOList dto数据集合
+     * @param machineList 机组集合
+     * @param type 数据类型：水/电/热
+     * @return
+     */
+    private List<MeterDataDTO> getMachineMeterStaffData(List<MeterDataDTO> meterDataDTOList,List<HeatMachine> machineList,String type){
         //拼接数据过程
         for (HeatMachine machine: machineList) {
             MeterDataDTO meterDataDTO = new MeterDataDTO();
@@ -94,19 +131,7 @@ public class MeterStaffServiceImpl implements MeterStaffService {
             meterDataDTO.setMeterDataList(meterDataList);
             meterDataDTOList.add(meterDataDTO);
         }
-
-        return R.ok("查询成功").putData(meterDataDTOList);
-    }
-
-
-    /**
-     * 查看日报表
-     * @param user
-     * @return
-     */
-    @Override
-    public R<List<MeterDataDTO>> getDayFromWater(User user) {
-        return null;
+        return meterDataDTOList;
     }
 
 

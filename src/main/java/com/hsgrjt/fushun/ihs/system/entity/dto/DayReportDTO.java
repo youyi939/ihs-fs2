@@ -10,13 +10,13 @@ import java.util.List;
 
 /**
  * @Author: KenChen
- * @Description: 报表原始数据封装单元
+ * @Description: 日报表的下层对象
  * @Date: Create in  2021/11/20 下午7:23
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MeterDataDTO {
+public class DayReportDTO {
 
     @ApiModelProperty("机组名字")
     private String stationName;
