@@ -37,4 +37,6 @@ public interface MeterStaffService {
      */
     R<List<DayReport>> getDayFromWater(User user);
 
+
+    void initDataEveryDay();
 }

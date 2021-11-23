@@ -110,7 +110,7 @@ public class HeatNetworkDataServiceImpl implements HeatNetworkDataService {
             dto.setStationName(heatMachine.getName());
             //格式化时间
             Date dNow = data.getGmtCreate();
-            SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd hh:mm:ss");
+            SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
             dto.setCreateDate(ft.format(dNow));
             dto = initData(dto);
 

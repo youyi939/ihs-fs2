@@ -19,8 +19,8 @@ import java.util.List;
 public class MeterData {
 
     @ApiModelProperty("格式化后的数据")
-    private double data;
+    private double meterData;
 
     @ApiModelProperty("格式化后的时间")
-    private String time;
+    private String meterTime;
 }
