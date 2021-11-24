@@ -1,6 +1,7 @@
 package com.hsgrjt.fushun.ihs.system.controller;
 
 import com.hsgrjt.fushun.ihs.annotations.RequirePermission;
+import com.hsgrjt.fushun.ihs.system.entity.dto.DayFormDTO;
 import com.hsgrjt.fushun.ihs.system.entity.dto.MeterDataDTO;
 import com.hsgrjt.fushun.ihs.system.entity.User;
 import com.hsgrjt.fushun.ihs.system.entity.dto.MeterStaffAddDTO;
@@ -49,7 +50,7 @@ public class MeterStaffController {
     @RequirePermission(Permissions.S_INIT)
     @ApiOperation(value="查询日报表 水")
     @GetMapping("/system/meter/getDayFromWater")
-    public R getDayFromWater(HttpServletRequest request){
+    public R<List<DayFormDTO>> getDayFromWater(HttpServletRequest request){
         User user = (User) request.getAttribute("ucm");
         return staffService.getDayFromWater(user);
     }

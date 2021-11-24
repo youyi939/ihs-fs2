@@ -1,6 +1,6 @@
 package com.hsgrjt.fushun.ihs.system.service;
 
-import com.hsgrjt.fushun.ihs.system.entity.DayReport;
+import com.hsgrjt.fushun.ihs.system.entity.dto.DayFormDTO;
 import com.hsgrjt.fushun.ihs.system.entity.dto.MeterDataDTO;
 import com.hsgrjt.fushun.ihs.system.entity.User;
 import com.hsgrjt.fushun.ihs.system.entity.dto.MeterStaffAddDTO;
@@ -35,7 +35,7 @@ public interface MeterStaffService {
      * @param user
      * @return
      */
-    R<List<DayReport>> getDayFromWater(User user);
+    R<List<DayFormDTO>> getDayFromWater(User user);
 
 
     void initDataEveryDay();

@@ -3,11 +3,9 @@ package com.hsgrjt.fushun.ihs.system.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.hsgrjt.fushun.ihs.system.entity.*;
 import com.hsgrjt.fushun.ihs.system.entity.dto.DayFormDTO;
-import com.hsgrjt.fushun.ihs.system.entity.dto.DayReportDTO;
 import com.hsgrjt.fushun.ihs.system.entity.dto.MeterDataDTO;
 import com.hsgrjt.fushun.ihs.system.entity.dto.MeterStaffAddDTO;
 import com.hsgrjt.fushun.ihs.system.entity.vo.R;
-import com.hsgrjt.fushun.ihs.system.mapper.HeatMachineMapper;
 import com.hsgrjt.fushun.ihs.system.mapper.MeterStaffMapper;
 import com.hsgrjt.fushun.ihs.system.service.HeatMachineService;
 import com.hsgrjt.fushun.ihs.system.service.MeterStaffService;
@@ -68,100 +66,6 @@ public class MeterStaffServiceImpl implements MeterStaffService {
     }
 
 
-//    /**
-//     * 查看日报表
-//     *
-//     * @param user
-//     * @return
-//     */
-//    @Override
-//    public R<List<DayReport>> getDayFromWater(User user) {
-//        List<DayFormDTO> dayFormDTOList = new ArrayList<>();
-//        //查询当前公司下共有几个中心站
-//        List<String> centerStations = machineService.getCenterStation(user.getAllowCompanys());
-//
-//        List<DayReport> dayReportList = new ArrayList<>();
-//
-//        //循环遍历中心站，最多也就1-2次
-//        for (String centerStation : centerStations) {
-//            System.out.println("\033[31;4m" + centerStation + "\033[0m");
-//            //这个list是拿到的当前中心站下面的机组列表
-//            List<HeatMachine> machineList = machineService.getMachineByCenterStation(centerStation);
-//
-//            //这个是需要set进dayReport中的list,这个list中的对象存的就是具体的数据
-//            List<MeterDataDTO> meterDataDTOList = new ArrayList<>();
-//            List<DayReportDTO> dtoList = new ArrayList<>();
-//            DayReport dayReport = new DayReport();
-////            设置对象中心站名字
-//            dayReport.setCenterStation(centerStation);
-//
-//            //获得机组的水电热数据
-//            getMachineMeterStaffData(meterDataDTOList, machineList, "水");
-//
-//            //计算数据过程---只计算基础数据和合计等单机组合计数据
-//            for (int i = 0; i < meterDataDTOList.size(); i++) {
-//                System.out.println("\033[31;4m" + meterDataDTOList.get(i).toString() + "\033[0m");
-//                DayReportDTO dto = new DayReportDTO();
-//                double bigSum = 0;
-//                String stationName =meterDataDTOList.get(i).getStationName();
-//                dto.setStationName(stationName);
-//                List<MeterData> sourceData = meterDataDTOList.get(i).getMeterDataList();
-//                List<MeterData> targetdata = new ArrayList<>();
-//                for (int j = 0; j < sourceData.size(); j++) {
-//                    MeterData meterData = new MeterData();
-//                    meterData.setTime(sourceData.get(j).getTime());
-//                    //避免月底的情况，数组越界。月底单独获取，单独计算
-//                    if (j < sourceData.size() - 1) {
-//                        double data = sourceData.get(j + 1).getData() - sourceData.get(j).getData();
-//                        meterData.setData(data);
-//                        bigSum += data;
-//                        targetdata.add(meterData);
-//
-//                        DayFormDTO dayFormDTO = new DayFormDTO();
-//                        dayFormDTO.setCenterStation(centerStation);
-//                        dayFormDTO.setStationName(stationName);
-//                        dayFormDTO.setTime(sourceData.get(j).getTime());
-//                        dayFormDTO.setData(sourceData.get(j).getData());
-//                        dayFormDTOList.add(dayFormDTO);
-//
-//                    }
-//                }
-//                dto.setMeterDataList(targetdata);
-//                dto.setBigSum(bigSum);
-//                dtoList.add(dto);
-//            }
-//
-//
-//            //计算数据过程---计算小记、结余等多机组合计数据
-//            List<ReportData> reportDataList = new ArrayList<>();
-//            //因为所有机组每天都会上传水电热数据，所以默认每个机组下的水电热数据条数是一样的，不要忘记判空就好,循环次数是本月有记录的天数
-//            for (int i = 0; i < dtoList.get(0).getMeterDataList().size(); i++) {
-//                ReportData reportData = new ReportData();
-//
-//                //开始循环计算小记
-//                double smallSum = 0;
-//                for (int j = 0; j < dtoList.size(); j++) {
-//                    //防止数组越界
-//                    if (dtoList.get(j).getMeterDataList().size() > i) {
-//                        smallSum += dtoList.get(j).getMeterDataList().get(i).getData();
-//                    }
-//                }
-//                //设置时间
-//                reportData.setTime(dtoList.get(0).getMeterDataList().get(i).getTime());
-//                reportData.setSamllData(smallSum);
-//                reportDataList.add(reportData);
-//            }
-//            dayReport.setMachineDataSum(reportDataList);
-//            dayReport.setDtoList(dtoList);
-//            dayReportList.add(dayReport);
-//        }
-//
-//
-//
-//        return R.ok("查询成功").putData(dayFormDTOList);
-//    }
-
-
 
     /**
      * 查看日报表
@@ -170,60 +74,49 @@ public class MeterStaffServiceImpl implements MeterStaffService {
      * @return
      */
     @Override
-    public R<List<DayReport>> getDayFromWater(User user) {
+    public R<List<DayFormDTO>> getDayFromWater(User user) {
+        int maxDays = getDaysOfMonth(new Date());    //本月最大天数
         List<DayFormDTO> dayFormDTOList = new ArrayList<>();
-
-        //查询当前公司下共有几个中心站
         List<String> centerStations = machineService.getCenterStation(user.getAllowCompanys());
 
-        List<DayReport> dayReportList = new ArrayList<>();
+        DayFormDTO xiaojiDayForm = new DayFormDTO();      //小记对象
+        xiaojiDayForm.setStationName("小记");
+        List<MeterData> xiaojiList = new ArrayList<>();
 
         //循环遍历中心站，最多也就1-2次
         for (String centerStation : centerStations) {
-//            System.out.println("\033[31;4m" + centerStation + "\033[0m");
             //这个list是拿到的当前中心站下面的机组列表
             List<HeatMachine> machineList = machineService.getMachineByCenterStation(centerStation);
 
             //这个是需要set进dayReport中的list,这个list中的对象存的就是具体的数据
             List<MeterDataDTO> meterDataDTOList = new ArrayList<>();
-            List<DayReportDTO> dtoList = new ArrayList<>();
-            DayReport dayReport = new DayReport();
-//            设置对象中心站名字
-            dayReport.setCenterStation(centerStation);
 
             //获得机组的水电热数据
             getMachineMeterStaffData(meterDataDTOList, machineList, "水");
 
-            int maxDays = getDaysOfMonth(new Date());
-
             //计算数据过程---只计算基础数据和合计等单机组合计数据
             for (int i = 0; i < meterDataDTOList.size(); i++) {
                 System.out.println("\033[31;4m" + meterDataDTOList.get(i).toString() + "\033[0m");
-                DayReportDTO dto = new DayReportDTO();
                 double bigSum = 0;
-                String stationName =meterDataDTOList.get(i).getStationName();
-                dto.setStationName(stationName);
+                String stationName = meterDataDTOList.get(i).getStationName();
                 List<MeterData> sourceData = meterDataDTOList.get(i).getMeterDataList();
                 List<MeterData> targetdata = new ArrayList<>();
                 for (int j = 0; j < maxDays; j++) {
                     MeterData meterData = new MeterData();
                     //避免月底的情况，数组越界。月底单独获取，单独计算
-                    if (j < sourceData.size() - 1 ) {
+                    if (j < sourceData.size() - 1) {
                         meterData.setMeterTime(sourceData.get(j).getMeterTime());
                         double data = sourceData.get(j + 1).getMeterData() - sourceData.get(j).getMeterData();
                         meterData.setMeterData(data);
                         bigSum += data;
                         targetdata.add(meterData);
-                    }else {
+                    } else {
                         double data = 0;
                         meterData.setMeterData(data);
                         bigSum += data;
                         targetdata.add(meterData);
                     }
                 }
-                dto.setMeterDataList(targetdata);
-                dto.setBigSum(bigSum);
-                dtoList.add(dto);
 
                 DayFormDTO dayFormDTO = new DayFormDTO();
                 dayFormDTO.setCenterStation(centerStation);
@@ -232,32 +125,23 @@ public class MeterStaffServiceImpl implements MeterStaffService {
                 dayFormDTO.setMeterDataList(targetdata);
                 dayFormDTOList.add(dayFormDTO);
             }
-
-
-            //计算数据过程---计算小记、结余等多机组合计数据
-            List<ReportData> reportDataList = new ArrayList<>();
-            //因为所有机组每天都会上传水电热数据，所以默认每个机组下的水电热数据条数是一样的，不要忘记判空就好,循环次数是本月有记录的天数
-            for (int i = 0; i < dtoList.get(0).getMeterDataList().size(); i++) {
-                ReportData reportData = new ReportData();
-
-                //开始循环计算小记
-                double smallSum = 0;
-                for (int j = 0; j < dtoList.size(); j++) {
-                    //防止数组越界
-                    if (dtoList.get(j).getMeterDataList().size() > i) {
-                        smallSum += dtoList.get(j).getMeterDataList().get(i).getMeterData();
-                    }
-                }
-                //设置时间
-                reportData.setTime(dtoList.get(0).getMeterDataList().get(i).getMeterTime());
-                reportData.setSamllData(smallSum);
-                reportDataList.add(reportData);
-            }
-            dayReport.setMachineDataSum(reportDataList);
-            dayReport.setDtoList(dtoList);
-            dayReportList.add(dayReport);
         }
 
+
+        //计算数据过程---计算小记、结余等多机组合计数据
+        for (int i = 0; i < maxDays; i++) {
+            MeterData meterData = new MeterData();
+            double smallSum = 0;
+            for (int j = 0; j < dayFormDTOList.size(); j++) {
+                    smallSum += dayFormDTOList.get(j).getMeterDataList().get(i).getMeterData();
+            }
+            meterData.setMeterData(smallSum);
+            xiaojiList.add(meterData);
+        }
+
+        xiaojiDayForm.setMeterDataList(xiaojiList);
+        xiaojiDayForm.setBigSum(xiaojiList.stream().mapToDouble(MeterData::getMeterData).sum());
+        dayFormDTOList.add(xiaojiDayForm);
 
 
         return R.ok("查询成功").putData(dayFormDTOList);
@@ -277,21 +161,21 @@ public class MeterStaffServiceImpl implements MeterStaffService {
         user1.setAllowCompanys("城南热电");
         List<HeatMachine> machineList3 = machineService.getMachineByUser(user3);
 
-        for (int i = 0; i <machineList1.size() ; i++) {
+        for (int i = 0; i < machineList1.size(); i++) {
             initData(machineList1.get(i).getId());
         }
 
-        for (int i = 0; i <machineList2.size() ; i++) {
+        for (int i = 0; i < machineList2.size(); i++) {
             initData(machineList2.get(i).getId());
         }
 
-        for (int i = 0; i <machineList3.size() ; i++) {
+        for (int i = 0; i < machineList3.size(); i++) {
             initData(machineList3.get(i).getId());
         }
 
     }
 
-    private void initData(Long id){
+    private void initData(Long id) {
         MeterStaffAddDTO meterStaffAddDTO = new MeterStaffAddDTO();
         meterStaffAddDTO.setHeat(0);
         meterStaffAddDTO.setPower(0);
