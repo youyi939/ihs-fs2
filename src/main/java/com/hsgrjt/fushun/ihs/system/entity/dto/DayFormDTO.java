@@ -35,5 +35,8 @@ public class DayFormDTO {
     @ApiModelProperty("结余")
     private double residue;
 
+    @ApiModelProperty("日计划用量，公式为 （供热站年水指标*实供面积/1000）*月度比例/月天数")
+    private double dayPlan;
+
 
 }
