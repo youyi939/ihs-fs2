@@ -35,5 +35,12 @@ public interface PlanService {
      */
     void initPlan();
 
+    /**
+     * 查询机组的计划对象
+     * @param stationName 机组名称
+     * @return 计划对象
+     */
+    Plan selectByStationName(String stationName);
+
 
 }

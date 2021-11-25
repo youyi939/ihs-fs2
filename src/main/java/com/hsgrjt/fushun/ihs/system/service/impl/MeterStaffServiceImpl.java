@@ -10,6 +10,7 @@ import com.hsgrjt.fushun.ihs.system.entity.vo.R;
 import com.hsgrjt.fushun.ihs.system.mapper.MeterStaffMapper;
 import com.hsgrjt.fushun.ihs.system.service.HeatMachineService;
 import com.hsgrjt.fushun.ihs.system.service.MeterStaffService;
+import com.hsgrjt.fushun.ihs.system.service.PlanService;
 import com.hsgrjt.fushun.ihs.system.service.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,9 @@ public class MeterStaffServiceImpl implements MeterStaffService {
 
     @Autowired
     HeatMachineService machineService;
+
+    @Autowired
+    PlanService planService;
 
 
     @Override
@@ -125,6 +129,7 @@ public class MeterStaffServiceImpl implements MeterStaffService {
                 System.out.println("\033[31;4m" + meterDataDTO.toString() + "\033[0m");
                 double bigSum = 0;
                 String stationName = meterDataDTO.getStationName();
+                Plan plan = planService.selectByStationName(stationName);
                 List<MeterData> sourceData = meterDataDTO.getMeterDataList();
                 List<MeterData> targetdata = new ArrayList<>();
                 for (int j = 0; j < maxDays; j++) {
@@ -149,6 +154,8 @@ public class MeterStaffServiceImpl implements MeterStaffService {
                 dayFormDTO.setStationName(stationName);
                 dayFormDTO.setBigSum(bigSum);
                 dayFormDTO.setMeterDataList(targetdata);
+                dayFormDTO.setYearPlan(plan.getWaterPlan());
+                dayFormDTO.setYearPlanResidue(plan.getWaterPlan() - bigSum);
                 dayFormDTOList.add(dayFormDTO);
             }
         }
@@ -165,10 +172,40 @@ public class MeterStaffServiceImpl implements MeterStaffService {
             xiaojiList.add(meterData);
         }
 
+        //计算年计划剩余用量
+        double sum = 0;
+        for (DayFormDTO dayFormDTO : dayFormDTOList) {
+            sum += dayFormDTO.getYearPlan();
+        }
+        xiaojiDayForm.setYearPlan(sum);
         xiaojiDayForm.setMeterDataList(xiaojiList);
         xiaojiDayForm.setBigSum(xiaojiList.stream().mapToDouble(MeterData::getMeterData).sum());
-        dayFormDTOList.add(xiaojiDayForm);
+        xiaojiDayForm.setYearPlanResidue(xiaojiDayForm.getYearPlan() - xiaojiDayForm.getBigSum());
 
+
+
+        DayFormDTO jieyuFromData = new DayFormDTO();
+        jieyuFromData.setStationName("结余");
+        List<MeterData> jieyuData = new ArrayList<>();
+
+        //计算结余,循环特殊对象：小记的meterData，这里存储的都是机组的小记，就是不同机组同一天数据的合
+        double residue = 0;
+        for (int i = 0; i < xiaojiDayForm.getMeterDataList().size(); i++) {
+            MeterData meterData = new MeterData();
+            if (i==0){          //月初第一天特殊计算
+                meterData.setMeterData(0);
+                jieyuData.add(meterData);
+            }else {
+                residue = xiaojiDayForm.getMeterDataList().get(i-1).getMeterData() - xiaojiDayForm.getMeterDataList().get(i).getMeterData() + jieyuData.get(i-1).getMeterData();
+                meterData.setMeterData(residue);
+                jieyuData.add(meterData);
+            }
+        }
+
+        jieyuFromData.setBigSum(jieyuData.stream().mapToDouble(MeterData::getMeterData).sum());
+        jieyuFromData.setMeterDataList(jieyuData);
+        dayFormDTOList.add(xiaojiDayForm);
+        dayFormDTOList.add(jieyuFromData);
 
         return R.ok("查询成功").putData(dayFormDTOList);
     }

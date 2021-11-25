@@ -57,6 +57,13 @@ public class PlanServiceImpl implements PlanService {
         initData("新北方高湾");
     }
 
+    @Override
+    public Plan selectByStationName(String stationName) {
+        QueryWrapper<Plan> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(Plan::getStationName,stationName);
+        return mapper.selectOne(queryWrapper);
+    }
+
     private void initData(String company){
         User user1 = new User();
         user1.setAllowCompanys(company);
