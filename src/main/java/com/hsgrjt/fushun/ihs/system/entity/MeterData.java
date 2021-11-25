@@ -18,6 +18,8 @@ import java.util.List;
 @NoArgsConstructor
 public class MeterData {
 
+    private Integer id;
+
     @ApiModelProperty("格式化后的数据")
     private double meterData;
 

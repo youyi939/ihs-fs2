@@ -4,6 +4,7 @@ import com.hsgrjt.fushun.ihs.system.entity.dto.DayFormDTO;
 import com.hsgrjt.fushun.ihs.system.entity.dto.MeterDataDTO;
 import com.hsgrjt.fushun.ihs.system.entity.User;
 import com.hsgrjt.fushun.ihs.system.entity.dto.MeterStaffAddDTO;
+import com.hsgrjt.fushun.ihs.system.entity.dto.MeterUpdateDTO;
 import com.hsgrjt.fushun.ihs.system.entity.vo.R;
 import org.springframework.stereotype.Service;
 
@@ -39,4 +40,6 @@ public interface MeterStaffService {
 
 
     void initDataEveryDay();
+
+    void update(MeterUpdateDTO dto);
 }

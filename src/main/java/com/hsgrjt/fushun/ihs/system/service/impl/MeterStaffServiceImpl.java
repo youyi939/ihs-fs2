@@ -5,6 +5,7 @@ import com.hsgrjt.fushun.ihs.system.entity.*;
 import com.hsgrjt.fushun.ihs.system.entity.dto.DayFormDTO;
 import com.hsgrjt.fushun.ihs.system.entity.dto.MeterDataDTO;
 import com.hsgrjt.fushun.ihs.system.entity.dto.MeterStaffAddDTO;
+import com.hsgrjt.fushun.ihs.system.entity.dto.MeterUpdateDTO;
 import com.hsgrjt.fushun.ihs.system.entity.vo.R;
 import com.hsgrjt.fushun.ihs.system.mapper.MeterStaffMapper;
 import com.hsgrjt.fushun.ihs.system.service.HeatMachineService;
@@ -62,6 +63,31 @@ public class MeterStaffServiceImpl implements MeterStaffService {
         //调用方法，传入dto集合，机组集合，数据类型，即可获得这些机组下的某种类型的数据
         getMachineMeterStaffData(meterDataDTOList, machineList, type);
 
+        //本月最大天数
+        int maxDays = getDaysOfMonth(new Date());
+
+
+        //补全数据，如果数据库里的数据不足月天数，则填写虚假数据加入到list中
+        for (MeterDataDTO meterDataDTO : meterDataDTOList) {
+            List<MeterData> sourceData = meterDataDTO.getMeterDataList();
+            for (int j = 1; j < maxDays+1; j++) {
+                if (sourceData.size() >= j){
+
+                }else {
+                    MeterData meterData = new MeterData();
+                    meterData.setMeterData(0);
+                    Calendar c = Calendar.getInstance();
+                    SimpleDateFormat format =  new SimpleDateFormat("yyyy-MM");
+                    String time = format.format(c.getTime());
+                    meterData.setMeterTime(time+"-"+j);
+                    sourceData.add(meterData);
+                }
+            }
+            meterDataDTO.setMeterDataList(sourceData);
+
+        }
+
+
         return R.ok("查询成功").putData(meterDataDTOList);
     }
 
@@ -95,11 +121,11 @@ public class MeterStaffServiceImpl implements MeterStaffService {
             getMachineMeterStaffData(meterDataDTOList, machineList, "水");
 
             //计算数据过程---只计算基础数据和合计等单机组合计数据
-            for (int i = 0; i < meterDataDTOList.size(); i++) {
-                System.out.println("\033[31;4m" + meterDataDTOList.get(i).toString() + "\033[0m");
+            for (MeterDataDTO meterDataDTO : meterDataDTOList) {
+                System.out.println("\033[31;4m" + meterDataDTO.toString() + "\033[0m");
                 double bigSum = 0;
-                String stationName = meterDataDTOList.get(i).getStationName();
-                List<MeterData> sourceData = meterDataDTOList.get(i).getMeterDataList();
+                String stationName = meterDataDTO.getStationName();
+                List<MeterData> sourceData = meterDataDTO.getMeterDataList();
                 List<MeterData> targetdata = new ArrayList<>();
                 for (int j = 0; j < maxDays; j++) {
                     MeterData meterData = new MeterData();
@@ -175,12 +201,28 @@ public class MeterStaffServiceImpl implements MeterStaffService {
 
     }
 
+    @Override
+    public void update(MeterUpdateDTO dto) {
+        switch (dto.getType()){
+            case "水":
+                meterStaffMapper.updateWater(dto.getUpdateData(),dto.getId());
+                break;
+            case "电":
+                meterStaffMapper.updatePower(dto.getUpdateData(),dto.getId());
+                break;
+            case "热":
+                meterStaffMapper.updateHeat(dto.getUpdateData(),dto.getId());
+                break;
+            default:
+                break;
+        }
+    }
+
     private void initData(Long id) {
         MeterStaffAddDTO meterStaffAddDTO = new MeterStaffAddDTO();
         meterStaffAddDTO.setHeat(0);
         meterStaffAddDTO.setPower(0);
         meterStaffAddDTO.setWater(0);
-
         meterStaffAddDTO.setMachineId(id.intValue());
         save(meterStaffAddDTO);
     }
@@ -233,7 +275,7 @@ public class MeterStaffServiceImpl implements MeterStaffService {
                     default:
                 }
 
-                meterDataList.add(new MeterData(data, ft.format(dNow)));
+                meterDataList.add(new MeterData(meterStaff.getId(),data, ft.format(dNow)));
             }
 
             meterDataDTO.setMeterDataList(meterDataList);

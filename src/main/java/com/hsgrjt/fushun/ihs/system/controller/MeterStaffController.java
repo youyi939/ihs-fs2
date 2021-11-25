@@ -5,6 +5,7 @@ import com.hsgrjt.fushun.ihs.system.entity.dto.DayFormDTO;
 import com.hsgrjt.fushun.ihs.system.entity.dto.MeterDataDTO;
 import com.hsgrjt.fushun.ihs.system.entity.User;
 import com.hsgrjt.fushun.ihs.system.entity.dto.MeterStaffAddDTO;
+import com.hsgrjt.fushun.ihs.system.entity.dto.MeterUpdateDTO;
 import com.hsgrjt.fushun.ihs.system.entity.vo.R;
 import com.hsgrjt.fushun.ihs.system.service.MeterStaffService;
 import com.hsgrjt.fushun.ihs.utils.Permissions;
@@ -53,6 +54,16 @@ public class MeterStaffController {
     public R<List<DayFormDTO>> getDayFromWater(HttpServletRequest request){
         User user = (User) request.getAttribute("ucm");
         return staffService.getDayFromWater(user);
+    }
+
+
+    @RequirePermission(Permissions.S_INIT)
+    @ApiOperation(value="更新水电热数据")
+    @PostMapping("/system/meter/update")
+    public R update(HttpServletRequest request, @RequestBody MeterUpdateDTO dto){
+        User user = (User) request.getAttribute("ucm");
+        staffService.update(dto);
+        return R.ok("更新成功");
     }
 
 
