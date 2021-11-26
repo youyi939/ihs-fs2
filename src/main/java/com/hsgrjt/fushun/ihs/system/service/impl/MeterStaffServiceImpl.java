@@ -163,6 +163,7 @@ public class MeterStaffServiceImpl implements MeterStaffService {
                 dayFormDTO.setMeterDataList(targetdata);
                 dayFormDTO.setYearPlan(plan.getWaterPlan());
                 dayFormDTO.setYearPlanResidue(plan.getWaterPlan() - bigSum);
+                // TODO: 2021/11/26 查询当月的月份数据ss
                 dayFormDTO.setDayTarget((plan.getWaterPlan()*plan.getArea()/1000) * monthScale.get(11)/maxDays);
                 dayFormDTOList.add(dayFormDTO);
             }
