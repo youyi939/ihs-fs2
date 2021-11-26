@@ -17,10 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @Author: KenChen
@@ -41,6 +38,7 @@ public class MeterStaffServiceImpl implements MeterStaffService {
 
     @Autowired
     PlanService planService;
+
 
 
     @Override
@@ -113,6 +111,15 @@ public class MeterStaffServiceImpl implements MeterStaffService {
         xiaojiDayForm.setStationName("小记");
         List<MeterData> xiaojiList = new ArrayList<>();
 
+        //计算日指标
+        Map<Integer,Double> monthScale = new HashMap<Integer, Double>();
+        monthScale.put(11,0.17);
+        monthScale.put(12,0.25);
+        monthScale.put(1,0.25);
+        monthScale.put(2,0.19);
+        monthScale.put(3,0.14);
+
+
         //循环遍历中心站，最多也就1-2次
         for (String centerStation : centerStations) {
             //这个list是拿到的当前中心站下面的机组列表
@@ -156,10 +163,10 @@ public class MeterStaffServiceImpl implements MeterStaffService {
                 dayFormDTO.setMeterDataList(targetdata);
                 dayFormDTO.setYearPlan(plan.getWaterPlan());
                 dayFormDTO.setYearPlanResidue(plan.getWaterPlan() - bigSum);
+                dayFormDTO.setDayTarget((plan.getWaterPlan()*plan.getArea()/1000) * monthScale.get(11)/maxDays);
                 dayFormDTOList.add(dayFormDTO);
             }
         }
-
 
         //计算数据过程---计算小记、结余等多机组合计数据
         for (int i = 0; i < maxDays; i++) {
@@ -182,13 +189,10 @@ public class MeterStaffServiceImpl implements MeterStaffService {
         xiaojiDayForm.setBigSum(xiaojiList.stream().mapToDouble(MeterData::getMeterData).sum());
         xiaojiDayForm.setYearPlanResidue(xiaojiDayForm.getYearPlan() - xiaojiDayForm.getBigSum());
 
-
-
+        //计算结余,循环特殊对象：小记的meterData，这里存储的都是机组的小记，就是不同机组同一天数据的合
         DayFormDTO jieyuFromData = new DayFormDTO();
         jieyuFromData.setStationName("结余");
         List<MeterData> jieyuData = new ArrayList<>();
-
-        //计算结余,循环特殊对象：小记的meterData，这里存储的都是机组的小记，就是不同机组同一天数据的合
         double residue = 0;
         for (int i = 0; i < xiaojiDayForm.getMeterDataList().size(); i++) {
             MeterData meterData = new MeterData();
@@ -207,6 +211,11 @@ public class MeterStaffServiceImpl implements MeterStaffService {
         dayFormDTOList.add(xiaojiDayForm);
         dayFormDTOList.add(jieyuFromData);
 
+
+
+
+
+
         return R.ok("查询成功").putData(dayFormDTOList);
     }
 
@@ -217,11 +226,11 @@ public class MeterStaffServiceImpl implements MeterStaffService {
         List<HeatMachine> machineList1 = machineService.getMachineByUser(user1);
 
         User user2 = new User();
-        user1.setAllowCompanys("城南热电");
+        user1.setAllowCompanys("抚顺新北方");
         List<HeatMachine> machineList2 = machineService.getMachineByUser(user2);
 
         User user3 = new User();
-        user1.setAllowCompanys("城南热电");
+        user1.setAllowCompanys("新北方高湾");
         List<HeatMachine> machineList3 = machineService.getMachineByUser(user3);
 
         for (int i = 0; i < machineList1.size(); i++) {

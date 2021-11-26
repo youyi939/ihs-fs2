@@ -44,4 +44,7 @@ public class DayFormDTO {
     @ApiModelProperty("年计划剩余用量")
     private double yearPlanResidue;
 
+    @ApiModelProperty("日指标")
+    private double dayTarget;
+
 }
