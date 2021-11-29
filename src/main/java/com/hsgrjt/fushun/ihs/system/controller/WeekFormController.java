@@ -45,4 +45,32 @@ public class WeekFormController {
         return weekFormService.selectByWeekNum(weekNum,year);
     }
 
+    @RequirePermission(Permissions.S_INIT)
+    @ApiOperation(value="查询周数")
+    @GetMapping("/system/weekPlan/selectWeekNum")
+    public R<List<Integer>> selectByWeekNum(HttpServletRequest request){
+        User user = (User) request.getAttribute("ucm");
+        return weekFormService.selectWeekNum();
+    }
+
+
+    @RequirePermission(Permissions.S_INIT)
+    @ApiOperation(value="删除周报表对象")
+    @GetMapping("/system/weekPlan/deleteWeekForm")
+    public R deleteWeekForm(HttpServletRequest request,@RequestParam("weekNum") Integer weekNum){
+        User user = (User) request.getAttribute("ucm");
+        weekFormService.deleteWeekForm(weekNum);
+        return R.ok("删除成功");
+    }
+
+
+    @RequirePermission(Permissions.S_INIT)
+    @ApiOperation(value="查看周报表对象")
+    @GetMapping("/system/weekPlan/selectWeekForm")
+    public R selectWeekForm(HttpServletRequest request,@RequestParam("weekNum") Integer weekNum,@RequestParam("type") String type){
+        User user = (User) request.getAttribute("ucm");
+        return weekFormService.selectWeekForm(weekNum,type);
+    }
+
+
 }

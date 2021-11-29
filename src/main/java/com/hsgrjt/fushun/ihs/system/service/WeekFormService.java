@@ -33,4 +33,26 @@ public interface WeekFormService {
      */
     R<List<WeekForm>> selectByWeekNum(Integer weekNum, String year);
 
+
+    /**
+     * 查询数据库中的周数集合
+     * @return
+     */
+    R<List<Integer>> selectWeekNum();
+
+    /**
+     * 删除周报表对象
+     * @param weekNum
+     */
+    void deleteWeekForm(Integer weekNum);
+
+
+    /**
+     * 查询周报表对象
+     * @param weekNum
+     * @param type
+     * @return
+     */
+    R<List<WeekForm>> selectWeekForm(Integer weekNum,String type);
+
 }

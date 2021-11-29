@@ -241,4 +241,24 @@ public class WeekFormServiceImpl implements WeekFormService {
         calendar.setTime(date);
         return calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
     }
+
+    @Override
+    public R<List<Integer>> selectWeekNum() {
+
+        return R.ok("查询成功").putData(mapper.selectWeekNum());
+    }
+
+    @Override
+    public void deleteWeekForm(Integer weekNum) {
+        QueryWrapper<WeekForm> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(WeekForm::getWeekNum,weekNum);
+        mapper.delete(queryWrapper);
+    }
+
+    @Override
+    public R<List<WeekForm>> selectWeekForm(Integer weekNum, String type) {
+        QueryWrapper<WeekForm> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(WeekForm::getWeekNum,weekNum).eq(WeekForm::getType,type);
+        return R.ok("查询成功").putData(mapper.selectList(queryWrapper));
+    }
 }

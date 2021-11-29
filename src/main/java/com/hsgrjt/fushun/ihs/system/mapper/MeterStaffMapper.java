@@ -32,7 +32,5 @@ public interface MeterStaffMapper extends BaseMapper<MeterStaff> {
     @Select("SELECT * from meter_staff where YEAR(gmt_create) = #{year} and MONTH(gmt_create) = #{month} AND DAY(gmt_create) = #{day} and machine_id = #{machineId}")
     MeterStaff selectByTime(@Param("year") int year,@Param("month") int month,@Param("day") int day,@Param("machineId") Long machineId);
 
-    @Select("SELECT week_num from week_form GROUP BY week_num")
-    List<Integer> selectWeekNum();
 
 }

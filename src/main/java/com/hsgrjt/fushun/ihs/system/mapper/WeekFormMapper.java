@@ -27,4 +27,7 @@ public interface WeekFormMapper extends BaseMapper<WeekForm> {
     @Select("SELECT * from week_form where YEAR(start_time) = #{year} and week_num = #{weekNum}")
     List<WeekForm> selectByWeekNum(@Param("weekNum")Integer weekNum,@Param("year") String year);
 
+
+    @Select("SELECT week_num from week_form GROUP BY week_num")
+    List<Integer> selectWeekNum();
 }
