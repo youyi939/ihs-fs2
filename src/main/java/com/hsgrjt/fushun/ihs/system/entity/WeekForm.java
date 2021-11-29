@@ -2,6 +2,7 @@ package com.hsgrjt.fushun.ihs.system.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.hsgrjt.fushun.ihs.system.entity.vo.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,7 +18,7 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class WeekForm {
+public class WeekForm  extends BaseEntity {
 
     @TableId(type = IdType.AUTO)
     private Integer id;
@@ -35,7 +36,7 @@ public class WeekForm {
     private double area;
 
     @ApiModelProperty("入住率")
-    private double check;
+    private String stay;
 
     @ApiModelProperty("本周比例")
     private double thisWeekRatio;
@@ -46,7 +47,7 @@ public class WeekForm {
     @ApiModelProperty("上周实耗量")
     private double lastWeekExpend;
 
-    @ApiModelProperty("上周实耗量")
+    @ApiModelProperty("本周实耗量")
     private double thisWeekExpend;
 
     @ApiModelProperty("本周单耗")
@@ -82,10 +83,10 @@ public class WeekForm {
     @ApiModelProperty("第几周")
     private Integer weekNum;
 
-    @ApiModelProperty("删除")
-    private double deleteFlag;
-
     @ApiModelProperty("公司名称")
     private String company;
+
+    @ApiModelProperty("水电热类型")
+    private String type;
 
 }

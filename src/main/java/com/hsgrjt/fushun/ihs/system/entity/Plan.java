@@ -48,4 +48,7 @@ public class Plan {
     @ApiModelProperty("更新时间")
     private Date updateTime;
 
+    @ApiModelProperty("入住率")
+    private double stay;
+
 }

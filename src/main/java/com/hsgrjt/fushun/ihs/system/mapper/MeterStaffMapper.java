@@ -6,7 +6,10 @@ import com.hsgrjt.fushun.ihs.system.entity.IhsFile;
 import com.hsgrjt.fushun.ihs.system.entity.MeterStaff;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+
+import java.util.List;
 
 /**
  * @Author: KenChen
@@ -25,5 +28,11 @@ public interface MeterStaffMapper extends BaseMapper<MeterStaff> {
 
     @Update("update meter_staff set power = #{data} where id = #{id};")
     void updatePower(@Param("data")double data ,@Param("id") int id);
+
+    @Select("SELECT * from meter_staff where YEAR(gmt_create) = #{year} and MONTH(gmt_create) = #{month} AND DAY(gmt_create) = #{day} and machine_id = #{machineId}")
+    MeterStaff selectByTime(@Param("year") int year,@Param("month") int month,@Param("day") int day,@Param("machineId") Long machineId);
+
+    @Select("SELECT week_num from week_form GROUP BY week_num")
+    List<Integer> selectWeekNum();
 
 }
