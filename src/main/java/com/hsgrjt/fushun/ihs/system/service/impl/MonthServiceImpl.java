@@ -2,7 +2,9 @@ package com.hsgrjt.fushun.ihs.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.hsgrjt.fushun.ihs.system.entity.*;
+import com.hsgrjt.fushun.ihs.system.entity.dto.SelectTimeDTO;
 import com.hsgrjt.fushun.ihs.system.entity.dto.WeekPlanAddDTO;
+import com.hsgrjt.fushun.ihs.system.entity.vo.R;
 import com.hsgrjt.fushun.ihs.system.mapper.MeterStaffMapper;
 import com.hsgrjt.fushun.ihs.system.mapper.MonthFormMapper;
 import com.hsgrjt.fushun.ihs.system.mapper.WeekFormMapper;
@@ -172,6 +174,61 @@ public class MonthServiceImpl implements MonthService {
         for (MonthForm monthForm : monthFormList) {
             monthFormMapper.insert(monthForm);
         }
+    }
+
+    @Override
+    public R<List<SelectTimeDTO>> selectTime() {
+        List<SelectTimeDTO> dtoList = new ArrayList<>();
+        List<SelectTime> selectTimeList = monthFormMapper.selectTime();
+        for (SelectTime selectTime : selectTimeList) {
+            SelectTimeDTO dto = new SelectTimeDTO();
+            dto.setSelectTime(selectTime);
+            String[] strNow1 = new SimpleDateFormat("yyyy-MM-dd").format(selectTime.getStartTime()).toString().split("-");
+            String[] strNow2 = new SimpleDateFormat("yyyy-MM-dd").format(selectTime.getStopTime()).toString().split("-");
+
+            //获取年月日信息
+            int startYear = Integer.parseInt(strNow1[0]);
+            int startMonth = Integer.parseInt(strNow1[1]);
+            int startDay = Integer.parseInt(strNow1[2]);
+
+            int stopYear = Integer.parseInt(strNow2[0]);
+            int stopMonth = Integer.parseInt(strNow2[1]);
+            int stopDay = Integer.parseInt(strNow2[2]);
+            dto.setMsg(startYear+"-"+startMonth+"-"+startDay+"/"+stopYear+"-"+stopMonth+"-"+stopDay);
+            dtoList.add(dto);
+        }
+        return R.ok("查询成功").putData(dtoList);
+    }
+
+    @Override
+    public R<List<MonthForm>> selectMonthFormByTime(SelectTime selectTime,User user) {
+        List<HeatMachine> machineList = machineService.getMachineByUser(user);
+
+        List<MonthForm> monthFormList = new ArrayList<>();
+        String[] strNow1 = new SimpleDateFormat("yyyy-MM-dd").format(selectTime.getStartTime()).toString().split("-");
+        String[] strNow2 = new SimpleDateFormat("yyyy-MM-dd").format(selectTime.getStopTime()).toString().split("-");
+
+        //获取年月日信息
+        int startYear = Integer.parseInt(strNow1[0]);
+        int startMonth = Integer.parseInt(strNow1[1]);
+        int startDay = Integer.parseInt(strNow1[2]);
+
+        int stopYear = Integer.parseInt(strNow2[0]);
+        int stopMonth = Integer.parseInt(strNow2[1]);
+        int stopDay = Integer.parseInt(strNow2[2]);
+
+        for (HeatMachine heatMachine : machineList) {
+            monthFormList.add(monthFormMapper.selectMonthByTime(startYear,startMonth,startDay,stopYear,stopMonth,stopDay,heatMachine.getId()));
+        }
+
+        return R.ok("查询成功").putData(monthFormList);
+    }
+
+    @Override
+    public void deleteMonthForm(SelectTime selectTime) {
+        QueryWrapper<MonthForm> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(MonthForm::getStartTime,selectTime.getStartTime()).eq(MonthForm::getStopTime,selectTime.getStopTime());
+        monthFormMapper.delete(queryWrapper);
     }
 
 
