@@ -55,7 +55,7 @@ public class MeterStaffServiceImpl implements MeterStaffService {
     }
 
     @Override
-    public R<List<MeterDataDTO>> findAll(User user, String type) {
+    public R<List<MeterDataDTO>> findAll(User user, String type,Integer selectYear,Integer selectMonth) {
         //获取用户所在公司下的机组列表
         List<HeatMachine> machineList = machineService.getMachineByUser(user);
 
@@ -63,10 +63,10 @@ public class MeterStaffServiceImpl implements MeterStaffService {
         List<MeterDataDTO> meterDataDTOList = new ArrayList<>();
 
         //调用方法，传入dto集合，机组集合，数据类型，即可获得这些机组下的某种类型的数据
-        getMachineMeterStaffData(meterDataDTOList, machineList, type);
+        getMachineMeterStaffData(meterDataDTOList, machineList, type,selectYear,selectMonth);
 
         //本月最大天数
-        int maxDays = getDaysOfMonth(new Date());
+        int maxDays = getDaysOfMonth(selectYear,selectMonth);
 
 
         //补全数据，如果数据库里的数据不足月天数，则填写虚假数据加入到list中
@@ -78,10 +78,11 @@ public class MeterStaffServiceImpl implements MeterStaffService {
                 }else {
                     MeterData meterData = new MeterData();
                     meterData.setMeterData(0);
-                    Calendar c = Calendar.getInstance();
-                    SimpleDateFormat format =  new SimpleDateFormat("yyyy-MM");
-                    String time = format.format(c.getTime());
-                    meterData.setMeterTime(time+"-"+j);
+//                    Calendar c = Calendar.getInstance();
+//                    SimpleDateFormat format =  new SimpleDateFormat("yyyy-MM");
+//                    String time = format.format(c.getTime());
+//                    meterData.setMeterTime(time+"-"+j);
+                    meterData.setMeterTime(selectYear+"-"+selectMonth+"-"+j);
                     sourceData.add(meterData);
                 }
             }
@@ -102,8 +103,8 @@ public class MeterStaffServiceImpl implements MeterStaffService {
      * @return
      */
     @Override
-    public R<List<DayFormDTO>> getDayFromWater(User user) {
-        int maxDays = getDaysOfMonth(new Date());    //本月最大天数
+    public R<List<DayFormDTO>> getDayFromWater(User user,Integer selectYear,Integer selectMonth) {
+        int maxDays = getDaysOfMonth(selectYear,selectMonth);    //本月最大天数
         List<DayFormDTO> dayFormDTOList = new ArrayList<>();
         List<String> centerStations = machineService.getCenterStation(user.getAllowCompanys());
 
@@ -129,7 +130,7 @@ public class MeterStaffServiceImpl implements MeterStaffService {
             List<MeterDataDTO> meterDataDTOList = new ArrayList<>();
 
             //获得机组的水电热数据
-            getMachineMeterStaffData(meterDataDTOList, machineList, "水");
+            getMachineMeterStaffData(meterDataDTOList, machineList, "水",selectYear,selectMonth);
 
             //计算数据过程---只计算基础数据和合计等单机组合计数据
             for (MeterDataDTO meterDataDTO : meterDataDTOList) {
@@ -277,9 +278,16 @@ public class MeterStaffServiceImpl implements MeterStaffService {
     }
 
 
-    public static int getDaysOfMonth(Date date) {
+    /**
+     * 输入年份月月份，返回此月的最大天数
+     * @param selectYear 年份
+     * @param selectMonth 月份
+     * @return
+     */
+    public static int getDaysOfMonth(Integer selectYear,Integer selectMonth) {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
+        calendar.set(Calendar.YEAR,selectYear);
+        calendar.set(Calendar.MONTH,selectMonth);
         return calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
     }
 
@@ -291,14 +299,14 @@ public class MeterStaffServiceImpl implements MeterStaffService {
      * @param type             数据类型：水/电/热
      * @return
      */
-    private List<MeterDataDTO> getMachineMeterStaffData(List<MeterDataDTO> meterDataDTOList, List<HeatMachine> machineList, String type) {
+    private List<MeterDataDTO> getMachineMeterStaffData(List<MeterDataDTO> meterDataDTOList, List<HeatMachine> machineList, String type,Integer selectYear,Integer selectMonth) {
         //拼接数据过程
         for (HeatMachine machine : machineList) {
             MeterDataDTO meterDataDTO = new MeterDataDTO();
             meterDataDTO.setStationName(machine.getName());
             //获取该机组的水电热数据(当月的数据)
             QueryWrapper<MeterStaff> meterStaffQueryWrapper = new QueryWrapper<>();
-            meterStaffQueryWrapper.lambda().eq(MeterStaff::getMachineId, machine.getId()).last("and date_format( gmt_create, '%Y%m' ) = date_format(curdate( ) , '%Y%m' )");
+            meterStaffQueryWrapper.lambda().eq(MeterStaff::getMachineId, machine.getId()).last("and YEAR(gmt_create) = "+selectYear+" and MONTH(gmt_create) = "+selectMonth);
             //该公司下的机组的水电热数据
             List<MeterStaff> meterStaffs = meterStaffMapper.selectList(meterStaffQueryWrapper);
             //dto中需要的数据集合

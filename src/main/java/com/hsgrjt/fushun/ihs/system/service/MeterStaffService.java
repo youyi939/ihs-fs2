@@ -29,14 +29,14 @@ public interface MeterStaffService {
      * 查询当月的水电热报表原始数据
      * @return
      */
-    R<List<MeterDataDTO>> findAll(User user,String type);
+    R<List<MeterDataDTO>> findAll(User user,String type,Integer selectYear,Integer selectMonth);
 
     /**
      * 查看今天的日报表
      * @param user
      * @return
      */
-    R<List<DayFormDTO>> getDayFromWater(User user);
+    R<List<DayFormDTO>> getDayFromWater(User user,Integer selectYear,Integer selectMonth);
 
 
     void initDataEveryDay();

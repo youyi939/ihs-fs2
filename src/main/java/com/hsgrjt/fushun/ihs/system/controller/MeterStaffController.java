@@ -16,6 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -43,17 +46,20 @@ public class MeterStaffController {
     @ApiOperation(value="查询用户所在公司下的机组的水电热数据原始数据表")
     @ApiImplicitParam(name = "type",value = "水/电/热",dataType = "String",paramType = "query",required = true)
     @GetMapping("/system/meter/findAll")
-    public R<List<MeterDataDTO>> findAll(HttpServletRequest request,@RequestParam(name = "type") String type){
+    public R<List<MeterDataDTO>> findAll(HttpServletRequest request,@RequestParam(name = "type") String type,@RequestParam(name = "month")String month){
         User user = (User) request.getAttribute("ucm");
-        return staffService.findAll(user,type);
+        String[] temp = month.split("-");
+        return staffService.findAll(user,type,Integer.parseInt(temp[0]),Integer.parseInt(temp[1]));
     }
 
     @RequirePermission(Permissions.S_INIT)
     @ApiOperation(value="查询日报表 水")
     @GetMapping("/system/meter/getDayFromWater")
-    public R<List<DayFormDTO>> getDayFromWater(HttpServletRequest request){
+    public R<List<DayFormDTO>> getDayFromWater(HttpServletRequest request, @RequestParam(name = "month")String month) throws ParseException {
         User user = (User) request.getAttribute("ucm");
-        return staffService.getDayFromWater(user);
+        String[] temp = month.split("-");
+
+        return staffService.getDayFromWater(user,Integer.parseInt(temp[0]),Integer.parseInt(temp[1]));
     }
 
 
