@@ -69,4 +69,7 @@ public class HeatMachine implements Serializable {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date gmtModified;
 
+    @ApiModelProperty("电表倍率")
+    private double multiplyingPower;
+
 }
