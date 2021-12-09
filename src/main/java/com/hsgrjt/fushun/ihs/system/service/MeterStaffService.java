@@ -36,7 +36,7 @@ public interface MeterStaffService {
      * @param user
      * @return
      */
-    R<List<DayFormDTO>> getDayFromWater(User user,Integer selectYear,Integer selectMonth);
+    R<List<DayFormDTO>> getDayFromWater(User user,Integer selectYear,Integer selectMonth,String type);
 
 
     void initDataEveryDay();

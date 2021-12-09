@@ -2,6 +2,7 @@ package com.hsgrjt.fushun.ihs.system.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -175,6 +176,7 @@ public class HeatNetworkData {
     @ApiModelProperty("调试状态开启")
     private Integer debug;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @ApiModelProperty("数据时间")
     private Date gmtCreate;
 

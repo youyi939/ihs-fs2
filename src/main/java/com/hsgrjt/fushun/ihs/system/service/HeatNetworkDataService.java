@@ -8,6 +8,7 @@ import com.hsgrjt.fushun.ihs.system.entity.vo.R;
 import org.springframework.stereotype.Service;
 
 import javax.xml.crypto.Data;
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -55,5 +56,15 @@ public interface HeatNetworkDataService {
      * @return 机组数据集合
      */
     R<List<HeatNetworkDataDTO>> selectHeatDataHistory(Integer stationId);
+
+
+    /**
+     * 查询某个机组的历史数据（时间/机组纬度筛选）
+     * @param machineId 机组id
+     * @param startTime 开始时间
+     * @param stopTime 结束时间
+     * @return
+     */
+    R<List<HeatNetworkDataDTO>> selectHeatDataHistoryForLine(Integer machineId,String startTime,String stopTime) throws ParseException;
 
 }

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.crypto.Data;
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -65,5 +66,16 @@ public class HeatNetworkDataController {
         return service.selectHeatDataHistory(stationId);
     }
 
+
+    @ApiImplicitParam(name = "machineId",value = "机组id",dataType = "int",paramType = "query",required = true)
+    @ApiOperation(value="折线图查询数据接口")
+    @GetMapping("/system/networkData/selectHeatDataHistoryForLine")
+    public R<List<HeatNetworkDataDTO>> selectHeatDataHistoryForLine(
+            @RequestParam(name = "machineId") Integer machineId,
+            @RequestParam(name = "startTime") String startTime,
+            @RequestParam(name = "stopTime") String stopTime
+    ) throws ParseException {
+        return service.selectHeatDataHistoryForLine(machineId,startTime,stopTime);
+    }
 
 }

@@ -261,7 +261,7 @@ public class MeterStaffServiceImpl implements MeterStaffService {
      * @return
      */
     @Override
-    public R<List<DayFormDTO>> getDayFromWater(User user, Integer selectYear, Integer selectMonth) {
+    public R<List<DayFormDTO>> getDayFromWater(User user, Integer selectYear, Integer selectMonth, String type) {
         List<DayFormDTO> dayFormDTOList = new ArrayList<>();
 
         List<String> centerStations = machineService.getCenterStation(user.getAllowCompanys());
@@ -270,7 +270,20 @@ public class MeterStaffServiceImpl implements MeterStaffService {
         //这个是需要set进dayReport中的list,这个list中的对象存的就是具体的数据
         List<MeterDataDTO> meterDataDTOList = new ArrayList<>();
         //获得机组的水电热数据
-        getMachineMeterStaffData(meterDataDTOList, machineList, "水", selectYear, selectMonth);
+
+        switch (type) {
+            case "水":
+                getMachineMeterStaffData(meterDataDTOList, machineList, "水", selectYear, selectMonth);
+                break;
+            case "电":
+                getMachineMeterStaffData(meterDataDTOList, machineList, "电", selectYear, selectMonth);
+                break;
+            case "热":
+                getMachineMeterStaffData(meterDataDTOList, machineList, "热", selectYear, selectMonth);
+                break;
+            default:
+                break;
+        }
 
         //计算日指标，月度比例
         Map<Integer, Double> monthScale = new HashMap<Integer, Double>();
@@ -395,7 +408,7 @@ public class MeterStaffServiceImpl implements MeterStaffService {
             centerDtoXiaoji.setMeterDataList(xiaojiListCenter);
             dayFormDTOList.add(centerDtoXiaoji);
 
-            for (int i = 0; i < maxDays ; i++) {
+            for (int i = 0; i < maxDays; i++) {
                 MeterData meterData = new MeterData();
                 double data1 = 0;
                 data1 = centerDtoXiaoji.getDayTarget() - centerDtoXiaoji.getMeterDataList().get(i).getMeterData();
@@ -417,18 +430,18 @@ public class MeterStaffServiceImpl implements MeterStaffService {
         List<MeterData> zongJieyuList = new ArrayList<>();
 
 
-        for (int i = 0; i < maxDays ; i++) {
+        for (int i = 0; i < maxDays; i++) {
             MeterData meterData = new MeterData();
             MeterData meterData2 = new MeterData();
             double xiaoji = 0;
             double jieyu = 0;
             for (int j = 0; j < dayFormDTOList.size(); j++) {
 
-                for (int k = 0; k < centerStations.size() ; k++) {
-                    if (dayFormDTOList.get(j).getStationName().equals(centerStations.get(k)+"小记")){
+                for (int k = 0; k < centerStations.size(); k++) {
+                    if (dayFormDTOList.get(j).getStationName().equals(centerStations.get(k) + "小记")) {
                         System.out.println(dayFormDTOList.get(j).getMeterDataList().get(i).getMeterData());
                         xiaoji += dayFormDTOList.get(j).getMeterDataList().get(i).getMeterData();
-                    }else if (dayFormDTOList.get(j).getStationName().equals(centerStations.get(k)+"结余")){
+                    } else if (dayFormDTOList.get(j).getStationName().equals(centerStations.get(k) + "结余")) {
                         System.out.println(dayFormDTOList.get(j).getMeterDataList().get(i).getMeterData());
                         jieyu += dayFormDTOList.get(j).getMeterDataList().get(i).getMeterData();
                     }
@@ -445,8 +458,8 @@ public class MeterStaffServiceImpl implements MeterStaffService {
         //合计和日指标
         for (int j = 0; j < dayFormDTOList.size(); j++) {
 
-            for (int k = 0; k < centerStations.size() ; k++) {
-                if (dayFormDTOList.get(j).getStationName().equals(centerStations.get(k)+"小记")){
+            for (int k = 0; k < centerStations.size(); k++) {
+                if (dayFormDTOList.get(j).getStationName().equals(centerStations.get(k) + "小记")) {
                     target += dayFormDTOList.get(j).getDayTarget();
                     bigsum += dayFormDTOList.get(j).getBigSum();
                 }
@@ -455,7 +468,7 @@ public class MeterStaffServiceImpl implements MeterStaffService {
 
         zongJieyuDTO.setBigSum(parseData2(zongJieyuList.stream().mapToDouble(MeterData::getMeterData).sum()));
         zongXiaojiDTO.setBigSum(bigsum);
-        zongXiaojiDTO.setDayTarget(parseData(target,2));
+        zongXiaojiDTO.setDayTarget(parseData(target, 2));
         zongJieyuDTO.setMeterDataList(zongJieyuList);
         zongXiaojiDTO.setMeterDataList(zongXiaojiList);
         dayFormDTOList.add(zongXiaojiDTO);
@@ -567,7 +580,7 @@ public class MeterStaffServiceImpl implements MeterStaffService {
                         data = meterStaff.getWater();
                         break;
                     case "电":
-                        data = meterStaff.getPower();
+                        data = meterStaff.getPower()*machine.getMultiplyingPower();
                         break;
                     case "热":
                         data = meterStaff.getHeat();
@@ -603,8 +616,8 @@ public class MeterStaffServiceImpl implements MeterStaffService {
         return Double.valueOf(ds);
     }
 
-    private static double parseData2(double d){
-        DecimalFormat df = new DecimalFormat( "#.00");
+    private static double parseData2(double d) {
+        DecimalFormat df = new DecimalFormat("#.00");
         String ds = df.format(d);
         return Double.valueOf(ds);
     }

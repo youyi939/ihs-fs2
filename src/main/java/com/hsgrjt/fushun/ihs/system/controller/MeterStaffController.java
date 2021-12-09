@@ -53,13 +53,12 @@ public class MeterStaffController {
     }
 
     @RequirePermission(Permissions.S_INIT)
-    @ApiOperation(value="查询日报表 水")
+    @ApiOperation(value="查询日报表")
     @GetMapping("/system/meter/getDayFromWater")
-    public R<List<DayFormDTO>> getDayFromWater(HttpServletRequest request, @RequestParam(name = "month")String month) throws ParseException {
+    public R<List<DayFormDTO>> getDayFromWater(HttpServletRequest request, @RequestParam(name = "month")String month,@RequestParam(name = "type")String type) throws ParseException {
         User user = (User) request.getAttribute("ucm");
         String[] temp = month.split("-");
-
-        return staffService.getDayFromWater(user,Integer.parseInt(temp[0]),Integer.parseInt(temp[1]));
+        return staffService.getDayFromWater(user,Integer.parseInt(temp[0]),Integer.parseInt(temp[1]),type);
     }
 
 
