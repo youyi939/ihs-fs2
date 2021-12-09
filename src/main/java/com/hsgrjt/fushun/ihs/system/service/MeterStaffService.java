@@ -42,7 +42,22 @@ public interface MeterStaffService {
     void initDataEveryDay();
 
 
+    /**
+     * 更新水电热数据
+     * @param dto
+     */
     void update(MeterUpdateDTO dto);
+
+
+    /**
+     * 每天抄表的接口，只更新当天的数据，不新增
+     * @param machineId 机组id
+     * @param water 水
+     * @param power 电
+     * @param heat 热
+     * @return
+     */
+    R updateByMachineId(Integer machineId,double water,double power,double heat);
 
 
 }

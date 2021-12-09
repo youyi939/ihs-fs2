@@ -32,5 +32,18 @@ public interface MeterStaffMapper extends BaseMapper<MeterStaff> {
     @Select("SELECT * from meter_staff where YEAR(gmt_create) = #{year} and MONTH(gmt_create) = #{month} AND DAY(gmt_create) = #{day} and machine_id = #{machineId}")
     MeterStaff selectByTime(@Param("year") int year,@Param("month") int month,@Param("day") int day,@Param("machineId") Long machineId);
 
+    @Update("update meter_staff set heat = #{heat} ,water = #{water} ,power = #{power} where machine_id = #{machineId} and\n" +
+            "YEAR(gmt_create) = #{year}\n" +
+            "and MONTH(gmt_create) = #{month}\n" +
+            "AND DAY(gmt_create) = #{day};")
+    void updateHeatByMachineId(
+            @Param("machineId")Integer machineId
+            ,@Param("water") double water
+            ,@Param("power") double power
+            ,@Param("heat") double heat
+            ,@Param("year") Integer year
+            ,@Param("month") Integer month
+            ,@Param("day") Integer day
+    );
 
 }

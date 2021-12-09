@@ -484,11 +484,11 @@ public class MeterStaffServiceImpl implements MeterStaffService {
         List<HeatMachine> machineList1 = machineService.getMachineByUser(user1);
 
         User user2 = new User();
-        user1.setAllowCompanys("抚顺新北方");
+        user2.setAllowCompanys("抚顺新北方");
         List<HeatMachine> machineList2 = machineService.getMachineByUser(user2);
 
         User user3 = new User();
-        user1.setAllowCompanys("新北方高湾");
+        user3.setAllowCompanys("新北方高湾");
         List<HeatMachine> machineList3 = machineService.getMachineByUser(user3);
 
         for (int i = 0; i < machineList1.size(); i++) {
@@ -520,6 +520,19 @@ public class MeterStaffServiceImpl implements MeterStaffService {
             default:
                 break;
         }
+    }
+
+
+    @Override
+    public R updateByMachineId(Integer machineId, double water, double power, double heat) {
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        String[] temp = formatter.format(date).split("-");
+        int year = Integer.parseInt(temp[0]);
+        int month = Integer.parseInt(temp[1]);
+        int day = Integer.parseInt(temp[2]);
+        meterStaffMapper.updateHeatByMachineId(machineId,water,power,heat,year,month,day);
+        return R.ok("更新成功");
     }
 
 
