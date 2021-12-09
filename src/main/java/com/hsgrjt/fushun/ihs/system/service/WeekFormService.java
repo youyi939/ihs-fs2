@@ -38,7 +38,7 @@ public interface WeekFormService {
      * 查询数据库中的周数集合
      * @return
      */
-    R<List<Integer>> selectWeekNum();
+    R<List<Integer>> selectWeekNum(String type);
 
     /**
      * 删除周报表对象

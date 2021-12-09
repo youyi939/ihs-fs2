@@ -129,8 +129,24 @@ public class WeekFormServiceImpl implements WeekFormService {
             }
 
             //本周计划指标
-            double thisWeekPlan = parseData(plan.getWaterPlan() * plan.getArea() * weekForm.getThisWeekRatio() / 1000, 2);
-            weekForm.setThisWeekPlan(thisWeekPlan);
+
+            double thisWeekPlan = 0;
+            switch (type){
+                case "水":
+                    thisWeekPlan = parseData(plan.getWaterPlan() * plan.getArea() * weekForm.getThisWeekRatio() / 1000, 2);
+                    weekForm.setThisWeekPlan(thisWeekPlan);
+                    break;
+                case "电":
+                    thisWeekPlan = parseData(plan.getPowerPlan() * plan.getArea() * weekForm.getThisWeekRatio() / 1000, 2);
+                    weekForm.setThisWeekPlan(thisWeekPlan);
+                    break;
+                case "热":
+                    thisWeekPlan = parseData(plan.getHeatPlan() * plan.getArea() * weekForm.getThisWeekRatio() / 1000, 2);
+                    weekForm.setThisWeekPlan(thisWeekPlan);
+                    break;
+                default:
+                    break;
+            }
 
             //上周实耗，第一周的数据都为0，第二周开始本数据为上周的本周实耗
             //累计计划指标 -第一周等于本周计划指标，第二周等于本周计划指标+上一周计划指标
@@ -141,7 +157,7 @@ public class WeekFormServiceImpl implements WeekFormService {
                 weekForm.setSumExpend(0);
             } else {
                 QueryWrapper<WeekForm> queryWrapper = new QueryWrapper<>();
-                queryWrapper.lambda().eq(WeekForm::getCompany, user.getAllowCompanys()).eq(WeekForm::getMachineId, machineList.get(i).getId()).eq(WeekForm::getWeekNum, weekNum - 1);
+                queryWrapper.lambda().eq(WeekForm::getCompany, user.getAllowCompanys()).eq(WeekForm::getMachineId, machineList.get(i).getId()).eq(WeekForm::getWeekNum, weekNum - 1).eq(WeekForm::getType,type);
                 WeekForm lastWeekForm = mapper.selectOne(queryWrapper);
                 weekForm.setLastWeekExpend(lastWeekForm.getThisWeekExpend());
                 weekForm.setSumPlan(lastWeekForm.getThisWeekPlan() + weekForm.getThisWeekPlan());
@@ -154,7 +170,19 @@ public class WeekFormServiceImpl implements WeekFormService {
             if (V.isEmpty(startMeter) || V.isEmpty(stopMeter)) {
                 weekForm.setThisWeekExpend(0);
             } else {
-                weekForm.setThisWeekExpend(stopMeter.getWater() - startMeter.getWater());
+                switch (type){
+                    case "水":
+                        weekForm.setThisWeekExpend(stopMeter.getWater() - startMeter.getWater());
+                        break;
+                    case "电":
+                        weekForm.setThisWeekExpend(stopMeter.getPower() - startMeter.getPower());
+                        break;
+                    case "热":
+                        weekForm.setThisWeekExpend(stopMeter.getHeat() - startMeter.getHeat());
+                        break;
+                    default:
+                        break;
+                }
             }
 
             //本周结余
@@ -191,7 +219,19 @@ public class WeekFormServiceImpl implements WeekFormService {
             //累计结余
             weekForm.setSumResidue(weekForm.getSumPlan() - weekForm.getSumExpend());
 
-            weekForm.setYearPlan(plan.getWaterPlan());
+            switch (type){
+                case "水":
+                    weekForm.setYearPlan(plan.getWaterPlan());
+                    break;
+                case "电":
+                    weekForm.setYearPlan(plan.getPowerPlan());
+                    break;
+                case "热":
+                    weekForm.setYearPlan(plan.getHeatPlan());
+                    break;
+                default:
+                    break;
+            }
             weekForm.setType(type);
             weekForm.setMachineName(machineList.get(i).getName());
             weekForm.setMachineId(Math.toIntExact(machineList.get(i).getId()));
@@ -242,9 +282,9 @@ public class WeekFormServiceImpl implements WeekFormService {
     }
 
     @Override
-    public R<List<Integer>> selectWeekNum() {
+    public R<List<Integer>> selectWeekNum(String type) {
 
-        return R.ok("查询成功").putData(mapper.selectWeekNum());
+        return R.ok("查询成功").putData(mapper.selectWeekNum(type));
     }
 
     @Override

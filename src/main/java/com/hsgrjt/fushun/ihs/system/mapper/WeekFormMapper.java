@@ -24,10 +24,10 @@ public interface WeekFormMapper extends BaseMapper<WeekForm> {
      * @param year
      * @return
      */
-    @Select("SELECT * from week_form where YEAR(start_time) = #{year} and week_num = #{weekNum}")
+    @Select("SELECT * from week_form where YEAR(start_time) = #{year} and week_num = #{weekNum} and delete_flag = 0")
     List<WeekForm> selectByWeekNum(@Param("weekNum")Integer weekNum,@Param("year") String year);
 
 
-    @Select("SELECT week_num from week_form GROUP BY week_num")
-    List<Integer> selectWeekNum();
+    @Select("SELECT week_num from week_form  WHERE delete_flag = 0 and type = #{type} GROUP BY week_num")
+    List<Integer> selectWeekNum(@Param("type")String type);
 }

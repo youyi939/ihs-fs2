@@ -48,9 +48,9 @@ public class WeekFormController {
     @RequirePermission(Permissions.S_INIT)
     @ApiOperation(value="查询周数")
     @GetMapping("/system/weekPlan/selectWeekNum")
-    public R<List<Integer>> selectByWeekNum(HttpServletRequest request){
+    public R<List<Integer>> selectByWeekNum(HttpServletRequest request,@RequestParam("type")String type){
         User user = (User) request.getAttribute("ucm");
-        return weekFormService.selectWeekNum();
+        return weekFormService.selectWeekNum(type);
     }
 
 
