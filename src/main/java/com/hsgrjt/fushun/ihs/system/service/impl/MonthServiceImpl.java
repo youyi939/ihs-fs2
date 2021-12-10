@@ -97,7 +97,7 @@ public class MonthServiceImpl implements MonthService {
             //设置中心站
             monthForm.setCenterStation(machineList.get(i).getCenterStation());
 
-            monthForm.setCreateYear("200*");
+            monthForm.setCreateYear(machineList.get(i).getCreateYear());
 
             //开阀面积
             monthForm.setArea((int)plan.getArea());

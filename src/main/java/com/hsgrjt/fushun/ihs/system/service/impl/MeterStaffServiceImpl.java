@@ -318,7 +318,7 @@ public class MeterStaffServiceImpl implements MeterStaffService {
                 if (j < sourceData.size() - 1) {
                     meterData.setMeterTime(sourceData.get(j).getMeterTime());
                     double data = sourceData.get(j + 1).getMeterData() - sourceData.get(j).getMeterData();
-                    meterData.setMeterData(data);
+                    meterData.setMeterData(parseData2(data));
                     bigSum += data;
                     targetdata.add(meterData);
                 } else if (j == sourceData.size() - 1 && sourceData.size() == maxDays) {
@@ -327,7 +327,7 @@ public class MeterStaffServiceImpl implements MeterStaffService {
                         MeterStaff meterStaff2 = meterStaffMapper.selectByTime(selectYear + 1, 1, 1, machineList.get(i).getId());
                         if (!V.isEmpty(meterStaff2)) {
                             double meterData2 = meterStaff2.getWater();
-                            meterData.setMeterData(meterData2 - meterData1);
+                            meterData.setMeterData(parseData2(meterData2 - meterData1));
                             bigSum += meterData2 - meterData1;
                             targetdata.add(meterData);
                         } else {
@@ -340,7 +340,7 @@ public class MeterStaffServiceImpl implements MeterStaffService {
                         MeterStaff meterStaff2 = meterStaffMapper.selectByTime(selectYear, selectMonth + 1, 1, machineList.get(i).getId());
                         if (!V.isEmpty(meterStaff2)) {
                             double meterData2 = meterStaff2.getWater();
-                            meterData.setMeterData(meterData2 - meterData1);
+                            meterData.setMeterData(parseData2(meterData2 - meterData1));
                             meterData.setMeterTime(sourceData.get(j - 1).getMeterTime());
                             bigSum += meterData2 - meterData1;
                             targetdata.add(meterData);
@@ -361,13 +361,32 @@ public class MeterStaffServiceImpl implements MeterStaffService {
             }
 
             dayFormDTO.setMeterDataList(targetdata);
-            dayFormDTO.setBigSum(bigSum);
-            dayFormDTO.setYearPlan(plan.getWaterPlan());
-            dayFormDTO.setYearPlanResidue(plan.getWaterPlan() - bigSum);
+            dayFormDTO.setBigSum(parseData2(bigSum));
+
 
             //日指标计算
-            double dayTarget = (plan.getWaterPlan() * plan.getArea() / 1000) * monthScale.get(11) / maxDays;
-            dayFormDTO.setDayTarget(parseData(dayTarget, 2));
+            double dayTarget = 0;
+            switch (type) {
+                case "水":
+                    dayTarget = (plan.getWaterPlan() * plan.getArea() / 1000) * monthScale.get(selectMonth) / maxDays;
+                    dayFormDTO.setYearPlan(plan.getWaterPlan());
+                    dayFormDTO.setYearPlanResidue(plan.getWaterPlan() - bigSum);
+                    break;
+                case "电":
+                    dayTarget = (plan.getPowerPlan() * plan.getArea() ) * monthScale.get(selectMonth) / maxDays;
+                    dayFormDTO.setYearPlan(plan.getPowerPlan());
+                    dayFormDTO.setYearPlanResidue(plan.getPowerPlan() - bigSum);
+                    break;
+                case "热":
+                    dayTarget = (1/plan.getHeatPlan() * plan.getArea() ) * monthScale.get(selectMonth) / maxDays;
+                    dayFormDTO.setYearPlan(plan.getHeatPlan());
+                    dayFormDTO.setYearPlanResidue(plan.getHeatPlan() - bigSum);
+                    break;
+                default:
+                    break;
+            }
+
+            dayFormDTO.setDayTarget(parseData2(dayTarget));
             dayFormDTOList.add(dayFormDTO);
         }
 
@@ -393,7 +412,7 @@ public class MeterStaffServiceImpl implements MeterStaffService {
                         smallSum += dayFormDTO.getMeterDataList().get(j).getMeterData();
                     }
                 }
-                meterData.setMeterData(smallSum);
+                meterData.setMeterData(parseData2(smallSum));
                 xiaojiListCenter.add(meterData);
             }
 
@@ -403,8 +422,8 @@ public class MeterStaffServiceImpl implements MeterStaffService {
                     targetDayPlan += dayFormDTO.getDayTarget();
                 }
             }
-            centerDtoXiaoji.setDayTarget(targetDayPlan);
-            centerDtoXiaoji.setBigSum(xiaojiListCenter.stream().mapToDouble(MeterData::getMeterData).sum());
+            centerDtoXiaoji.setDayTarget(parseData2(targetDayPlan));
+            centerDtoXiaoji.setBigSum(parseData2(xiaojiListCenter.stream().mapToDouble(MeterData::getMeterData).sum()));
             centerDtoXiaoji.setMeterDataList(xiaojiListCenter);
             dayFormDTOList.add(centerDtoXiaoji);
 
@@ -416,7 +435,7 @@ public class MeterStaffServiceImpl implements MeterStaffService {
                 jieyuListCenter.add(meterData);
             }
             centerDtoJieyu.setMeterDataList(jieyuListCenter);
-            centerDtoJieyu.setDayTarget(targetDayPlan);
+            centerDtoJieyu.setDayTarget(parseData2(targetDayPlan));
             centerDtoJieyu.setBigSum(parseData2(jieyuListCenter.stream().mapToDouble(MeterData::getMeterData).sum()));
             dayFormDTOList.add(centerDtoJieyu);
 
@@ -467,8 +486,8 @@ public class MeterStaffServiceImpl implements MeterStaffService {
         }
 
         zongJieyuDTO.setBigSum(parseData2(zongJieyuList.stream().mapToDouble(MeterData::getMeterData).sum()));
-        zongXiaojiDTO.setBigSum(bigsum);
-        zongXiaojiDTO.setDayTarget(parseData(target, 2));
+        zongXiaojiDTO.setBigSum(parseData2(bigsum));
+        zongXiaojiDTO.setDayTarget(parseData2(target));
         zongJieyuDTO.setMeterDataList(zongJieyuList);
         zongXiaojiDTO.setMeterDataList(zongXiaojiList);
         dayFormDTOList.add(zongXiaojiDTO);

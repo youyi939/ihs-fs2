@@ -46,4 +46,41 @@ public interface MeterStaffMapper extends BaseMapper<MeterStaff> {
             ,@Param("day") Integer day
     );
 
+
+    @Update("update meter_staff set power = #{power} where machine_id = #{machineId} and\n" +
+            "YEAR(gmt_create) = #{year}\n" +
+            "and MONTH(gmt_create) = #{month}\n" +
+            "AND DAY(gmt_create) = #{day};")
+    void updatePowerByMachineId(
+            @Param("machineId")Integer machineId
+            ,@Param("power") double power
+            ,@Param("year") Integer year
+            ,@Param("month") Integer month
+            ,@Param("day") Integer day
+    );
+
+    @Update("update meter_staff set heat = #{heat} where machine_id = #{machineId} and\n" +
+            "YEAR(gmt_create) = #{year}\n" +
+            "and MONTH(gmt_create) = #{month}\n" +
+            "AND DAY(gmt_create) = #{day};")
+    void updateHeatByMachineId2(
+            @Param("machineId")Integer machineId
+            ,@Param("heat") double heat
+            ,@Param("year") Integer year
+            ,@Param("month") Integer month
+            ,@Param("day") Integer day
+    );
+
+    @Update("update meter_staff set water = #{water} where machine_id = #{machineId} and\n" +
+            "YEAR(gmt_create) = #{year}\n" +
+            "and MONTH(gmt_create) = #{month}\n" +
+            "AND DAY(gmt_create) = #{day};")
+    void updateWaterByMachineId(
+            @Param("machineId")Integer machineId
+            ,@Param("water") double water
+            ,@Param("year") Integer year
+            ,@Param("month") Integer month
+            ,@Param("day") Integer day
+    );
+
 }

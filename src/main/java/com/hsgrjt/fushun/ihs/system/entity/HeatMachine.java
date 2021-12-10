@@ -72,4 +72,7 @@ public class HeatMachine implements Serializable {
     @ApiModelProperty("电表倍率")
     private double multiplyingPower;
 
+    @ApiModelProperty("建设年份")
+    private String createYear;
+
 }
