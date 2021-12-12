@@ -620,7 +620,7 @@ public class MeterStaffServiceImpl implements MeterStaffService {
                     default:
                 }
 
-                meterDataList.add(new MeterData(meterStaff.getId(), data, ft.format(dNow)));
+                meterDataList.add(new MeterData(meterStaff.getId(), parseData2(data), ft.format(dNow)));
             }
 
             meterDataDTO.setMeterDataList(meterDataList);
@@ -648,7 +648,7 @@ public class MeterStaffServiceImpl implements MeterStaffService {
         return Double.valueOf(ds);
     }
 
-    private static double parseData2(double d) {
+    public static double parseData2(double d) {
         DecimalFormat df = new DecimalFormat("#.00");
         String ds = df.format(d);
         return Double.valueOf(ds);

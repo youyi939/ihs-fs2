@@ -167,7 +167,7 @@ public class HeatNetworkData {
     @ApiModelProperty("电量、年初始")
     private double electricStart;
 
-    @ApiModelProperty("平均室温")
+    @ApiModelProperty("室外气温")
     private double roomTempatureAvg;
 
     @ApiModelProperty("地面积水报警")

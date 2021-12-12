@@ -6,7 +6,9 @@ import com.hsgrjt.fushun.ihs.system.entity.HeatNetworkData;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
+import javax.crypto.spec.PSource;
 import java.util.List;
 
 /**
@@ -45,6 +47,22 @@ public interface HeatNetworkDataMapper extends BaseMapper<HeatNetworkData> {
             @Param("hour") Integer hour,
             @Param("machineId") Integer machineId,
             @Param("limitNum") Integer limitNum
+    );
+
+
+    @Update("update heat_network_data set main_valve_set = #{i}  where " +
+            "YEAR(gmt_create) = #{year} " +
+            "and MONTH(gmt_create) = #{month} " +
+            "AND DAY(gmt_create) = #{day} " +
+            "AND HOUR(gmt_create) = #{hour}  " +
+            "and station_id = #{machineId} ")
+    void updateByTime(
+            @Param("i") double i,
+            @Param("year") Integer year,
+            @Param("month") Integer month,
+            @Param("day") Integer day,
+            @Param("hour") Integer hour,
+            @Param("machineId") Integer machineId
     );
 
 }

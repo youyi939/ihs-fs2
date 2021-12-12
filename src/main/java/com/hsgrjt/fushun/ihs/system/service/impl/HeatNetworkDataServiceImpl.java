@@ -274,10 +274,12 @@ public class HeatNetworkDataServiceImpl implements HeatNetworkDataService {
                 int year = Integer.parseInt(temp[0]);
                 int month = Integer.parseInt(temp[1]);
                 int day = Integer.parseInt(temp[2]);
-                for (int j = 1; j <= 24; j++) {
-                    List<HeatNetworkData> dataList = mapper.selectByTime(year, month, day, j, machineId, 1);
-                    heatNetworkDataList.addAll(dataList);
-                }
+                List<HeatNetworkData> dataList = mapper.selectByTime(year, month, day, 5, machineId, 1);
+                List<HeatNetworkData> dataList2 = mapper.selectByTime(year, month, day, 10, machineId, 1);
+                List<HeatNetworkData> dataList3 = mapper.selectByTime(year, month, day, 20, machineId, 1);
+                heatNetworkDataList.addAll(dataList);
+                heatNetworkDataList.addAll(dataList2);
+                heatNetworkDataList.addAll(dataList3);
 
             }
             return getR(heatNetworkDataList);
@@ -286,7 +288,7 @@ public class HeatNetworkDataServiceImpl implements HeatNetworkDataService {
     }
 
     private R getR(List<HeatNetworkData> heatNetworkDataList) {
-        for (int i = 0; i < heatNetworkDataList.size() ; i++) {
+        for (int i = 0; i < heatNetworkDataList.size(); i++) {
             //一级网参数
             heatNetworkDataList.get(i).setFirstSuTempature(parseData(heatNetworkDataList.get(i).getFirstSuTempature(), 1)); //一网供温
             heatNetworkDataList.get(i).setFirstReTempature(parseData(heatNetworkDataList.get(i).getFirstReTempature(), 1));  //一网回温

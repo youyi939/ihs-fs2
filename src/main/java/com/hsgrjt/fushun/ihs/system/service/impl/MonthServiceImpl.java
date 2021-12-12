@@ -82,7 +82,7 @@ public class MonthServiceImpl implements MonthService {
         long from1 = startTime.getTime();
         long to1 = stopTime.getTime();
         //日期差
-        int diffDays = (int) ((to1 - from1) / (1000 * 60 * 60 * 24));
+        int diffDays = (int) ((to1 - from1) / (1000 * 60 * 60 * 24))+1;
 
         int startMaxDay = getDaysOfMonth(startTime);
         int stopMaxDay = getDaysOfMonth(stopTime);
@@ -104,32 +104,41 @@ public class MonthServiceImpl implements MonthService {
 
             //户数 - 开阀率
             monthForm.setResidentNum(0);
-            monthForm.setOpenValve("0%");
+
+
 
             //设置所占比例
             double proportion = monthScale.get(startMonth)/getDaysOfMonth(startTime)*diffDays;
             NumberFormat format = NumberFormat.getPercentInstance();
             //小数最大保留2位
             format.setMaximumFractionDigits(2);
-            String stay = format.format(proportion);
-            monthForm.setProportion(stay);
+            String format1 = format.format(proportion);
+            monthForm.setProportion(format1);
+
+            //开阀率
+            NumberFormat stayFormat = NumberFormat.getPercentInstance();
+            //小数最大保留2位
+            stayFormat.setMaximumFractionDigits(2);
+            String stay = stayFormat.format(plan.getStay());
+            monthForm.setOpenValve(stay);
+
 
             //计划指标 - 水电热
             monthForm.setPlanTargetWater(monthForm.getArea()*plan.getWaterPlan()*proportion/1000);
-            monthForm.setPlanTargetPower(monthForm.getArea()*plan.getPowerPlan()*proportion/1000);
+            monthForm.setPlanTargetPower(monthForm.getArea()*plan.getPowerPlan()*proportion);
             monthForm.setPlanTargetHeat(monthForm.getArea()*proportion/plan.getHeatPlan());
 
 
             //实耗量 - 水电热
             MeterStaff startMeter = meterStaffMapper.selectByTime(startYear, startMonth, startDay, machineList.get(i).getId());
-            MeterStaff stopMeter = meterStaffMapper.selectByTime(stopYear, stopMonth, stopDay, machineList.get(i).getId());
+            MeterStaff stopMeter = meterStaffMapper.selectByTime(stopYear, stopMonth, stopDay+1, machineList.get(i).getId());
             if (V.isEmpty(startMeter) || V.isEmpty(stopMeter)) {
                 monthForm.setExpendWater(0);
                 monthForm.setExpendPower(0);
                 monthForm.setExpendHeat(0);
             }else {
                 monthForm.setExpendWater(stopMeter.getWater() - startMeter.getWater());
-                monthForm.setExpendPower(stopMeter.getPower() - startMeter.getPower());
+                monthForm.setExpendPower(stopMeter.getPower()*machineList.get(i).getMultiplyingPower() - startMeter.getPower()*machineList.get(i).getMultiplyingPower());
                 monthForm.setExpendHeat(stopMeter.getHeat() - startMeter.getHeat());
             }
 
@@ -154,13 +163,13 @@ public class MonthServiceImpl implements MonthService {
             if (monthForm.getExpendPower() == 0){
                 monthForm.setUnitPower(0);
             }else {
-                monthForm.setUnitPower(monthForm.getExpendPower()/monthForm.getArea()/proportion*1000);
+                monthForm.setUnitPower(monthForm.getExpendPower()/monthForm.getArea()/proportion);
             }
 
             if (monthForm.getExpendHeat() == 0){
                 monthForm.setUnitHeat(0);
             }else {
-                monthForm.setUnitHeat(monthForm.getExpendHeat()/monthForm.getArea()/proportion*1000);
+                monthForm.setUnitHeat(1/(monthForm.getExpendHeat()/monthForm.getArea()/proportion));
             }
 
             monthForm.setMachineName(machineList.get(i).getName());

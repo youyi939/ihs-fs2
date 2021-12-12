@@ -25,7 +25,7 @@ public interface MonthFormMapper extends BaseMapper<MonthForm> {
             "YEAR(start_time) = #{startYear} and MONTH(start_time) = #{startMonth} AND DAY(start_time) = #{startDay} \n" +
             "and\n" +
             "YEAR(stop_time) = #{stopYear} and MONTH(stop_time) = #{stopMonth} AND DAY(stop_time) = #{stopDay}\n" +
-            "and machine_id = #{machineId}")
+            "and machine_id = #{machineId} and delete_flag = 0")
     MonthForm selectMonthByTime(
             @Param("startYear")Integer startYear,
             @Param("startMonth")Integer startMonth,
