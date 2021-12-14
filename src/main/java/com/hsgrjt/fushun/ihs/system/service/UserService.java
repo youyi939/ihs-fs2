@@ -2,6 +2,7 @@ package com.hsgrjt.fushun.ihs.system.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hsgrjt.fushun.ihs.system.entity.User;
+import com.hsgrjt.fushun.ihs.system.entity.vo.R;
 
 import java.util.List;
 
@@ -25,5 +26,7 @@ public interface UserService extends IService<User> {
     Boolean isUserVip(Integer id,String type);
 
     User selectById(Integer id);
+
+    R updateUserNode(String node,Integer id);
 
 }

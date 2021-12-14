@@ -4,6 +4,7 @@ package com.hsgrjt.fushun.ihs.system.controller;
 import com.hsgrjt.fushun.ihs.config.GlobalConfiguration;
 import com.hsgrjt.fushun.ihs.system.entity.TokenSession;
 import com.hsgrjt.fushun.ihs.system.entity.User;
+import com.hsgrjt.fushun.ihs.system.entity.vo.R;
 import com.hsgrjt.fushun.ihs.system.service.TokenSessionService;
 import com.hsgrjt.fushun.ihs.system.service.UserService;
 import com.hsgrjt.fushun.ihs.utils.JsonMessage;
@@ -60,6 +61,13 @@ public class UserController {
         } else {
             return JsonMessage.DATABASE_ERROR;
         }
+    }
+
+
+    @PostMapping("updateUserNode")
+    public R updateUserNode(@RequestBody User user) {
+        userService.updateUserNode(user.getNote(),user.getId());
+        return R.ok("更新成功");
     }
 
     @GetMapping("has_username/{username}")

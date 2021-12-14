@@ -39,7 +39,7 @@ public class PlanController {
     }
 
     @ApiOperation(value="更新计划数据")
-    @RequirePermission(Permissions.S_INIT)
+    @RequirePermission(Permissions.H_TGT)
     @PostMapping("/system/plan/update")
     public R update(HttpServletRequest request, @RequestBody Plan plan){
         User user = (User) request.getAttribute("ucm");

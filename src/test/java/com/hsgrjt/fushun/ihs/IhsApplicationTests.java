@@ -1,16 +1,19 @@
 package com.hsgrjt.fushun.ihs;
 
+import com.hsgrjt.fushun.ihs.system.entity.HeatMachine;
 import com.hsgrjt.fushun.ihs.system.entity.HeatNetworkData;
+import com.hsgrjt.fushun.ihs.system.entity.MeterStaff;
+import com.hsgrjt.fushun.ihs.system.entity.User;
+import com.hsgrjt.fushun.ihs.system.entity.dto.MeterStaffAddDTO;
 import com.hsgrjt.fushun.ihs.system.mapper.HeatNetworkDataMapper;
 import com.hsgrjt.fushun.ihs.system.mapper.MeterStaffMapper;
 import com.hsgrjt.fushun.ihs.system.service.HeatMachineService;
 import com.hsgrjt.fushun.ihs.system.service.HeatNetworkDataService;
 import com.hsgrjt.fushun.ihs.system.service.MeterStaffService;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -19,48 +22,75 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import static com.hsgrjt.fushun.ihs.system.service.impl.HeatNetworkDataServiceImpl.getDays;
-
-
 @SpringBootTest
 class IhsApplicationTests {
 
-//    @Autowired
-//    MeterStaffMapper mapper;
-//
-//    @Autowired
-//    MeterStaffService meterStaffService;
-//
-//    @Autowired
-//    HeatMachineService heatMachineService;
+    @Autowired
+    MeterStaffMapper mapper;
+
+    @Autowired
+    MeterStaffService meterStaffService;
+
+    @Autowired
+    MeterStaffMapper meterStaffMapper;
+
+    @Autowired
+    HeatMachineService heatMachineService;
 
 //    @Test
-//    void test() {
-//
-//
-//        double[] aar = {
-//                14985,
-//                15029,
-//                15070,
-//                15112,
-//                15153,
-//                15191,
-//                15231,
-//                15270,
-//                15307,
-//                15345
-//        };
-//
-//        List<String> days = getDays("2021-12-01","2021-12-10");
-//        for (int i = 0; i < days.size() ; i++) {
-//            String[] temp = days.get(i).split("-");
-//            int year = Integer.parseInt(temp[0]);
-//            int month = Integer.parseInt(temp[1]);
-//            int day = Integer.parseInt(temp[2]);
-//            mapper.updateHeatByMachineId2(15,aar[i],year,month,day);
-//        }
-//
-//    }
+    void test1() throws ParseException {
+
+        User user1 = new User();
+        user1.setAllowCompanys("城南热电");
+        List<HeatMachine> machineList1 = heatMachineService.getMachineByUser(user1);
+
+        User user2 = new User();
+        user2.setAllowCompanys("抚顺新北方");
+        List<HeatMachine> machineList2 = heatMachineService.getMachineByUser(user2);
+
+        User user3 = new User();
+        user3.setAllowCompanys("新北方高湾");
+        List<HeatMachine> machineList3 = heatMachineService.getMachineByUser(user3);
+
+        for (int i = 0; i < machineList1.size(); i++) {
+            initMeterData(machineList1.get(i).getId());
+        }
+
+        for (int i = 0; i < machineList2.size(); i++) {
+            initMeterData(machineList2.get(i).getId());
+        }
+
+        for (int i = 0; i < machineList3.size(); i++) {
+            initMeterData(machineList3.get(i).getId());
+        }
+
+    }
+
+    private void initMeterData(Long id) throws ParseException {
+        MeterStaffAddDTO meterStaffAddDTO = new MeterStaffAddDTO();
+        meterStaffAddDTO.setHeat(0);
+        meterStaffAddDTO.setPower(0);
+        meterStaffAddDTO.setWater(0);
+        meterStaffAddDTO.setMachineId(id.intValue());
+        save(meterStaffAddDTO);
+    }
+
+    private void save(MeterStaffAddDTO dto) throws ParseException {
+        MeterStaff entity = new MeterStaff();
+        BeanUtils.copyProperties(dto, entity);
+        entity.setGmtCreate(new Date());
+
+        HeatMachine machine = heatMachineService.findById(dto.getMachineId());
+        entity.setMachineName(machine.getName());
+        entity.setCenterStation(machine.getCenterStation());
+
+
+        DateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
+        Date myDate2 = dateFormat2.parse("2021-12-12");
+        entity.setGmtCreate(myDate2);
+
+        meterStaffMapper.insert(entity);
+    }
 
 
     @Autowired
@@ -73,7 +103,7 @@ class IhsApplicationTests {
      *
      * @throws ParseException
      */
-//    @Transactional
+
 //    @Test
     void test() throws ParseException {
 

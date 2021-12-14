@@ -2,6 +2,7 @@ package com.hsgrjt.fushun.ihs.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.hsgrjt.fushun.ihs.system.entity.User;
+import com.hsgrjt.fushun.ihs.system.entity.vo.R;
 import com.hsgrjt.fushun.ihs.system.mapper.UserMapper;
 import com.hsgrjt.fushun.ihs.system.service.UserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -59,5 +60,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public User selectById(Integer id) {
         return userMapper.selectById(id);
+    }
+
+    @Override
+    public R updateUserNode(String node, Integer id) {
+        userMapper.updateUserNode(node,id);
+        return R.ok("更新成功");
     }
 }

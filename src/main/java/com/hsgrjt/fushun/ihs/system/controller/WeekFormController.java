@@ -27,7 +27,7 @@ public class WeekFormController {
     WeekFormService weekFormService;
 
 
-    @RequirePermission(Permissions.S_INIT)
+    @RequirePermission(Permissions.H_BB)
     @ApiOperation(value="新增周报表记录")
     @PostMapping("/system/weekPlan/save")
     public R save(@RequestBody WeekPlanAddDTO dto, HttpServletRequest request, @RequestParam("type")String type) throws ParseException {
@@ -54,7 +54,7 @@ public class WeekFormController {
     }
 
 
-    @RequirePermission(Permissions.S_INIT)
+    @RequirePermission(Permissions.H_BB)
     @ApiOperation(value="删除周报表对象")
     @GetMapping("/system/weekPlan/deleteWeekForm")
     public R deleteWeekForm(HttpServletRequest request,@RequestParam("weekNum") Integer weekNum){

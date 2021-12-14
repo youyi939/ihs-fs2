@@ -72,7 +72,7 @@ public class MeterStaffController {
     }
 
 
-//    @RequirePermission(Permissions.S_INIT)
+    @RequirePermission(Permissions.H_MR)
     @ApiOperation(value = "抄表")
     @GetMapping("/system/meter/updateByMachineId")
     public R updateByMachineId(HttpServletRequest request,

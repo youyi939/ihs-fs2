@@ -25,7 +25,7 @@ public class MonthFormController {
     @Autowired
     MonthService monthService;
 
-    @RequirePermission(Permissions.S_INIT)
+    @RequirePermission(Permissions.H_BB)
     @ApiOperation(value="新增月报表记录")
     @PostMapping("/system/monthPlan/save")
     public R save(@RequestBody WeekPlanAddDTO dto, HttpServletRequest request) throws ParseException {
@@ -51,7 +51,7 @@ public class MonthFormController {
         return monthService.selectMonthFormByTime(selectTime,user);
     }
 
-    @RequirePermission(Permissions.S_INIT)
+    @RequirePermission(Permissions.H_BB)
     @ApiOperation(value="删除月报表对象")
     @PostMapping("/system/monthPlan/deleteMonthForm")
     public R deleteMonthForm(HttpServletRequest request, @RequestBody SelectTime selectTime) throws ParseException {
