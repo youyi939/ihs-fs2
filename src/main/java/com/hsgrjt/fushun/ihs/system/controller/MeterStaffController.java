@@ -62,7 +62,7 @@ public class MeterStaffController {
     }
 
 
-    @RequirePermission(Permissions.S_INIT)
+    @RequirePermission(Permissions.H_MR)
     @ApiOperation(value = "更新水电热数据")
     @PostMapping("/system/meter/update")
     public R update(HttpServletRequest request, @RequestBody MeterUpdateDTO dto) {
