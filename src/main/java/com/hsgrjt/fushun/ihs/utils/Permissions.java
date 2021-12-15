@@ -18,8 +18,7 @@ public abstract class Permissions {
     public static final String H_MR = "H_MR";
     //年计划修改权限
     public static final String H_TGT = "H_TGT";
-    //热网历史数据查看
-    public static final String H_HIS = "H_HIS";
+
     //热网报表编辑
     public static final String H_BB = "H_BB";
 }

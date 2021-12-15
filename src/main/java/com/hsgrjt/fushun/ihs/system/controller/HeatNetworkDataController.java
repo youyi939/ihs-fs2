@@ -59,7 +59,7 @@ public class HeatNetworkDataController {
     }
 
 
-    @RequirePermission(Permissions.H_HIS)
+    @RequirePermission(Permissions.S_INIT)
     @ApiImplicitParam(name = "stationId",value = "机组id",dataType = "int",paramType = "query",required = true)
     @ApiOperation(value="查询机组的历史数据（查询当前机组的近五十条数据，用于折线图）")
     @GetMapping("/system/networkData/selectHeatDataHistory")
@@ -68,7 +68,7 @@ public class HeatNetworkDataController {
     }
 
 
-    @RequirePermission(Permissions.H_HIS)
+    @RequirePermission(Permissions.S_INIT)
     @ApiImplicitParam(name = "machineId",value = "机组id",dataType = "int",paramType = "query",required = true)
     @ApiOperation(value="折线图查询数据接口")
     @GetMapping("/system/networkData/selectHeatDataHistoryForLine")

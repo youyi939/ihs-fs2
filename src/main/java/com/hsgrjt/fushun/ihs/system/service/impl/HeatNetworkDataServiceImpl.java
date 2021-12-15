@@ -5,11 +5,13 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hsgrjt.fushun.ihs.system.entity.HeatMachine;
 import com.hsgrjt.fushun.ihs.system.entity.HeatNetworkData;
+import com.hsgrjt.fushun.ihs.system.entity.Plan;
 import com.hsgrjt.fushun.ihs.system.entity.dto.HeatNetworkDataDTO;
 import com.hsgrjt.fushun.ihs.system.entity.vo.R;
 import com.hsgrjt.fushun.ihs.system.mapper.HeatMachineMapper;
 import com.hsgrjt.fushun.ihs.system.mapper.HeatNetworkDataMapper;
 import com.hsgrjt.fushun.ihs.system.service.HeatNetworkDataService;
+import com.hsgrjt.fushun.ihs.system.service.PlanService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,6 +40,9 @@ public class HeatNetworkDataServiceImpl implements HeatNetworkDataService {
 
     @Autowired
     HeatMachineMapper machineMapper;
+
+    @Autowired
+    PlanService planService;
 
     @Override
     public R<List<HeatNetworkData>> selectByTime(Data start, Data end) {
@@ -100,16 +105,17 @@ public class HeatNetworkDataServiceImpl implements HeatNetworkDataService {
 
 
         for (HeatMachine heatMachine : machineList) {
+
+            Plan plan = planService.selectByStationName(heatMachine.getName());
             //拼接sql：根据时间倒序的最后一个截取，机组ID相对应
-//            QueryWrapper<HeatNetworkData> heatNetworkDataQueryWrapper = new QueryWrapper<>();
-//            heatNetworkDataQueryWrapper.lambda().orderByDesc(HeatNetworkData::getGmtCreate).last("limit 1").eq(HeatNetworkData::getStationId,heatMachine.getId());
-//            HeatNetworkData data = mapper.selectOne(heatNetworkDataQueryWrapper);
             HeatNetworkData data = mapper.selectData(heatMachine.getId());
 
             HeatNetworkDataDTO dto = new HeatNetworkDataDTO();
             BeanUtils.copyProperties(data, dto);
             //set机组名称
             dto.setStationName(heatMachine.getName());
+            dto.setSupplyArea(plan.getArea());
+
             //格式化时间
             Date dNow = data.getGmtCreate();
             SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
