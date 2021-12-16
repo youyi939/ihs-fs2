@@ -12,16 +12,14 @@ import com.hsgrjt.fushun.ihs.system.mapper.HeatMachineMapper;
 import com.hsgrjt.fushun.ihs.system.mapper.HeatNetworkDataMapper;
 import com.hsgrjt.fushun.ihs.system.service.HeatNetworkDataService;
 import com.hsgrjt.fushun.ihs.system.service.PlanService;
+import com.hsgrjt.fushun.ihs.utils.V;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.xml.crypto.Data;
 import java.math.RoundingMode;
-import java.text.DateFormat;
-import java.text.NumberFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.text.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -110,19 +108,23 @@ public class HeatNetworkDataServiceImpl implements HeatNetworkDataService {
             //拼接sql：根据时间倒序的最后一个截取，机组ID相对应
             HeatNetworkData data = mapper.selectData(heatMachine.getId());
 
-            HeatNetworkDataDTO dto = new HeatNetworkDataDTO();
-            BeanUtils.copyProperties(data, dto);
-            //set机组名称
-            dto.setStationName(heatMachine.getName());
-            dto.setSupplyArea(plan.getArea());
+            if (!V.isEmpty(data)){
+                HeatNetworkDataDTO dto = new HeatNetworkDataDTO();
+                BeanUtils.copyProperties(data, dto);
+                //set机组名称
+                dto.setStationName(heatMachine.getName());
+                dto.setSupplyArea(plan.getArea());
 
-            //格式化时间
-            Date dNow = data.getGmtCreate();
-            SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            dto.setCreateDate(ft.format(dNow));
-            dto = initData(dto);
+                //格式化时间
+                Date dNow = data.getGmtCreate();
+                SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                dto.setCreateDate(ft.format(dNow));
+                dto = initData(dto);
 
-            heatNetworkDataList.add(dto);
+                heatNetworkDataList.add(dto);
+            }
+
+
         }
 
 
@@ -138,70 +140,59 @@ public class HeatNetworkDataServiceImpl implements HeatNetworkDataService {
      */
     public static HeatNetworkDataDTO initData(HeatNetworkDataDTO dto) {
         //一级网参数
-        dto.setFirstSuTempature(parseData(dto.getFirstSuTempature(), 1)); //一网供温
-        dto.setFirstReTempature(parseData(dto.getFirstReTempature(), 1));  //一网回温
-        dto.setFirstFlow(parseData(dto.getFirstFlow(), 1));              //一网流量
-        dto.setFirstSuPressure(parseData(dto.getFirstSuPressure(), 2));  //一网供压
-        dto.setFirstRePressure(parseData(dto.getFirstRePressure(), 2));  //一网回压
-        dto.setFirstFlowSet(parseData(dto.getFirstFlowSet(), 1));  //一网流量设定
-        dto.setFirstConsumption(parseData(dto.getFirstConsumption(), 1));  //一网流量单耗
-        dto.setFirstFlowSum(parseData(dto.getFirstFlowSum(), 1));  //一网流量累计
-        dto.setFirstInstantHeat(parseData(dto.getFirstInstantHeat(), 1));  //一网热量
+        dto.setFirstSuTempature(parseData2(dto.getFirstSuTempature())); //一网供温
+        dto.setFirstReTempature(parseData2(dto.getFirstReTempature()));  //一网回温
+        dto.setFirstFlow(parseData2(dto.getFirstFlow()));              //一网流量
+        dto.setFirstSuPressure(parseData2(dto.getFirstSuPressure()));  //一网供压
+        dto.setFirstRePressure(parseData2(dto.getFirstRePressure()));  //一网回压
+        dto.setFirstFlowSet(parseData2(dto.getFirstFlowSet()));  //一网流量设定
+        dto.setFirstConsumption(parseData2(dto.getFirstConsumption()));  //一网流量单耗
+        dto.setFirstFlowSum(parseData2(dto.getFirstFlowSum()));  //一网流量累计
+        dto.setFirstInstantHeat(parseData2(dto.getFirstInstantHeat()));  //一网热量
 //        dto.setFirstHeatTotal(parseData(dto.getFirstHeatTotal(),1));  //一网热量累计
 
         //二级网参数
-        dto.setSecSuTempature(parseData(dto.getSecSuTempature(), 1)); //二网供温
-        dto.setSecReTempature(parseData(dto.getSecReTempature(), 1)); //二网回温
-        dto.setSecFlow(parseData(dto.getSecFlow(), 1));               //二网流量
-        dto.setSecSuPressure(parseData(dto.getSecSuPressure(), 2));  //二网供压
-        dto.setSecRePressure(parseData(dto.getSecRePressure(), 2));  //二网回压
-        dto.setSecFlowSum(parseData(dto.getSecFlowSum(), 1));  //二网流量累计
+        dto.setSecSuTempature(parseData2(dto.getSecSuTempature())); //二网供温
+        dto.setSecReTempature(parseData2(dto.getSecReTempature())); //二网回温
+        dto.setSecFlow(parseData2(dto.getSecFlow()));               //二网流量
+        dto.setSecSuPressure(parseData2(dto.getSecSuPressure()));  //二网供压
+        dto.setSecRePressure(parseData2(dto.getSecRePressure()));  //二网回压
+        dto.setSecFlowSum(parseData2(dto.getSecFlowSum()));  //二网流量累计
 
         //循环泵
-        dto.setCirculatingPumpSet(parseData(dto.getCirculatingPumpSet(), 1));  //循环泵给定
-        dto.setCirculatingPumpFeed(parseData(dto.getCirculatingPumpFeed(), 1));  //循环泵频率
+        dto.setCirculatingPumpSet(parseData2(dto.getCirculatingPumpSet()));  //循环泵给定
+        dto.setCirculatingPumpFeed(parseData2(dto.getCirculatingPumpFeed()));  //循环泵频率
 
-        dto.setTargetTempature(parseData(dto.getTargetTempature(), 1));  //温度目标设定
-        dto.setSecPressureMax(parseData(dto.getSecPressureMax(), 1));  //二网压力上限
-        dto.setSecPressureSetMax(parseData(dto.getSecPressureSetMax(), 1));  //二网压力设定上限
-        dto.setSecPressureSetMin(parseData(dto.getSecPressureSetMin(), 1));  //二网压力设定下限
-        dto.setSecPressureMin(parseData(dto.getSecPressureMin(), 1));  //二网压力下限
-        dto.setMainValveSet(parseData(dto.getMainValveSet(), 1));  //一阀给定
-        dto.setMainValveFeed(parseData(dto.getMainValveFeed(), 1));  //一阀反馈
-        dto.setAuxValveSet(parseData(dto.getAuxValveSet(), 1));  //二阀给定
-        dto.setAuxValveFeed(parseData(dto.getAuxValveFeed(), 1));  //二阀反馈
-        dto.setWaterTankLevel(parseData(dto.getWaterTankLevel(), 1));  //水箱水位
-        dto.setWaterTankMinLevel(parseData(dto.getWaterTankMinLevel(), 1));  //水箱水位下限
-        dto.setReplenishingPumpSet(parseData(dto.getReplenishingPumpSet(), 1));  //补水泵给定
-        dto.setReplenishingPumpFeed(parseData(dto.getReplenishingPumpFeed(), 1));  //补水泵频率
-        dto.setFirstHeatPredict(parseData(dto.getFirstHeatPredict(), 1));  //预测热量
-        dto.setReplenishingFlow(parseData(dto.getReplenishingFlow(), 1));  //补水流量
+        dto.setTargetTempature(parseData2(dto.getTargetTempature()));  //温度目标设定
+        dto.setSecPressureMax(parseData2(dto.getSecPressureMax()));  //二网压力上限
+        dto.setSecPressureSetMax(parseData2(dto.getSecPressureSetMax()));  //二网压力设定上限
+        dto.setSecPressureSetMin(parseData2(dto.getSecPressureSetMin()));  //二网压力设定下限
+        dto.setSecPressureMin(parseData2(dto.getSecPressureMin()));  //二网压力下限
+        dto.setMainValveSet(parseData2(dto.getMainValveSet()));  //一阀给定
+        dto.setMainValveFeed(parseData2(dto.getMainValveFeed()));  //一阀反馈
+        dto.setAuxValveSet(parseData2(dto.getAuxValveSet()));  //二阀给定
+        dto.setAuxValveFeed(parseData2(dto.getAuxValveFeed()));  //二阀反馈
+        dto.setWaterTankLevel(parseData2(dto.getWaterTankLevel()));  //水箱水位
+        dto.setWaterTankMinLevel(parseData2(dto.getWaterTankMinLevel()));  //水箱水位下限
+        dto.setReplenishingPumpSet(parseData2(dto.getReplenishingPumpSet()));  //补水泵给定
+        dto.setReplenishingPumpFeed(parseData2(dto.getReplenishingPumpFeed()));  //补水泵频率
+        dto.setFirstHeatPredict(parseData2(dto.getFirstHeatPredict()));  //预测热量
+        dto.setReplenishingFlow(parseData2(dto.getReplenishingFlow()));  //补水流量
 //        dto.setReplenishingTotal(parseData(dto.getReplenishingTotal(),1));  //补水流量累计
-        dto.setElectricPower(parseData(dto.getElectricPower(), 1));  //瞬时电量
-        dto.setElectricTotal(parseData(dto.getElectricTotal(), 1));  //电量累计
-        dto.setHeatConsumption(parseData(dto.getHeatConsumption(), 1));  //热负荷
-        dto.setRoomTempatureAvg(parseData(dto.getRoomTempatureAvg(), 2));  //平均室温
+        dto.setElectricPower(parseData2(dto.getElectricPower()));  //瞬时电量
+        dto.setElectricTotal(parseData2(dto.getElectricTotal()));  //电量累计
+        dto.setHeatConsumption(parseData2(dto.getHeatConsumption()));  //热负荷
+        dto.setRoomTempatureAvg(parseData2(dto.getRoomTempatureAvg()));  //平均室温
 
 
         return dto;
     }
 
-    /**
-     * 保留小数点后几位的方法
-     *
-     * @param d   小数
-     * @param num 保留到小数点后几位
-     * @return 保留后的小数
-     */
-    private static double parseData(double d, int num) {
 
-        NumberFormat nf = NumberFormat.getNumberInstance();
-// 保留两位小数
-        nf.setMaximumFractionDigits(num);
-// 如果不需要四舍五入，可以使用RoundingMode.DOWN
-        nf.setRoundingMode(RoundingMode.UP);
-
-        return Double.parseDouble(nf.format(d));
+    public static double parseData2(double d) {
+        DecimalFormat df = new DecimalFormat("#.00");
+        String ds = df.format(d);
+        return Double.valueOf(ds);
     }
 
     /**
@@ -296,49 +287,49 @@ public class HeatNetworkDataServiceImpl implements HeatNetworkDataService {
     private R getR(List<HeatNetworkData> heatNetworkDataList) {
         for (int i = 0; i < heatNetworkDataList.size(); i++) {
             //一级网参数
-            heatNetworkDataList.get(i).setFirstSuTempature(parseData(heatNetworkDataList.get(i).getFirstSuTempature(), 1)); //一网供温
-            heatNetworkDataList.get(i).setFirstReTempature(parseData(heatNetworkDataList.get(i).getFirstReTempature(), 1));  //一网回温
-            heatNetworkDataList.get(i).setFirstFlow(parseData(heatNetworkDataList.get(i).getFirstFlow(), 1));              //一网流量
-            heatNetworkDataList.get(i).setFirstSuPressure(parseData(heatNetworkDataList.get(i).getFirstSuPressure(), 2));  //一网供压
-            heatNetworkDataList.get(i).setFirstRePressure(parseData(heatNetworkDataList.get(i).getFirstRePressure(), 2));  //一网回压
-            heatNetworkDataList.get(i).setFirstFlowSet(parseData(heatNetworkDataList.get(i).getFirstFlowSet(), 1));  //一网流量设定
-            heatNetworkDataList.get(i).setFirstConsumption(parseData(heatNetworkDataList.get(i).getFirstConsumption(), 1));  //一网流量单耗
-            heatNetworkDataList.get(i).setFirstFlowSum(parseData(heatNetworkDataList.get(i).getFirstFlowSum(), 1));  //一网流量累计
-            heatNetworkDataList.get(i).setFirstInstantHeat(parseData(heatNetworkDataList.get(i).getFirstInstantHeat(), 1));  //一网热量
+            heatNetworkDataList.get(i).setFirstSuTempature(parseData2(heatNetworkDataList.get(i).getFirstSuTempature())); //一网供温
+            heatNetworkDataList.get(i).setFirstReTempature(parseData2(heatNetworkDataList.get(i).getFirstReTempature()));  //一网回温
+            heatNetworkDataList.get(i).setFirstFlow(parseData2(heatNetworkDataList.get(i).getFirstFlow()));              //一网流量
+            heatNetworkDataList.get(i).setFirstSuPressure(parseData2(heatNetworkDataList.get(i).getFirstSuPressure()));  //一网供压
+            heatNetworkDataList.get(i).setFirstRePressure(parseData2(heatNetworkDataList.get(i).getFirstRePressure()));  //一网回压
+            heatNetworkDataList.get(i).setFirstFlowSet(parseData2(heatNetworkDataList.get(i).getFirstFlowSet()));  //一网流量设定
+            heatNetworkDataList.get(i).setFirstConsumption(parseData2(heatNetworkDataList.get(i).getFirstConsumption()));  //一网流量单耗
+            heatNetworkDataList.get(i).setFirstFlowSum(parseData2(heatNetworkDataList.get(i).getFirstFlowSum()));  //一网流量累计
+            heatNetworkDataList.get(i).setFirstInstantHeat(parseData2(heatNetworkDataList.get(i).getFirstInstantHeat()));  //一网热量
 //        dto.setFirstHeatTotal(parseData(dto.getFirstHeatTotal(),1));  //一网热量累计
 
             //二级网参数
-            heatNetworkDataList.get(i).setSecSuTempature(parseData(heatNetworkDataList.get(i).getSecSuTempature(), 1)); //二网供温
-            heatNetworkDataList.get(i).setSecReTempature(parseData(heatNetworkDataList.get(i).getSecReTempature(), 1)); //二网回温
-            heatNetworkDataList.get(i).setSecFlow(parseData(heatNetworkDataList.get(i).getSecFlow(), 1));               //二网流量
-            heatNetworkDataList.get(i).setSecSuPressure(parseData(heatNetworkDataList.get(i).getSecSuPressure(), 2));  //二网供压
-            heatNetworkDataList.get(i).setSecRePressure(parseData(heatNetworkDataList.get(i).getSecRePressure(), 2));  //二网回压
-            heatNetworkDataList.get(i).setSecFlowSum(parseData(heatNetworkDataList.get(i).getSecFlowSum(), 1));  //二网流量累计
+            heatNetworkDataList.get(i).setSecSuTempature(parseData2(heatNetworkDataList.get(i).getSecSuTempature())); //二网供温
+            heatNetworkDataList.get(i).setSecReTempature(parseData2(heatNetworkDataList.get(i).getSecReTempature())); //二网回温
+            heatNetworkDataList.get(i).setSecFlow(parseData2(heatNetworkDataList.get(i).getSecFlow()));               //二网流量
+            heatNetworkDataList.get(i).setSecSuPressure(parseData2(heatNetworkDataList.get(i).getSecSuPressure()));  //二网供压
+            heatNetworkDataList.get(i).setSecRePressure(parseData2(heatNetworkDataList.get(i).getSecRePressure()));  //二网回压
+            heatNetworkDataList.get(i).setSecFlowSum(parseData2(heatNetworkDataList.get(i).getSecFlowSum()));  //二网流量累计
 
             //循环泵
-            heatNetworkDataList.get(i).setCirculatingPumpSet(parseData(heatNetworkDataList.get(i).getCirculatingPumpSet(), 1));  //循环泵给定
-            heatNetworkDataList.get(i).setCirculatingPumpFeed(parseData(heatNetworkDataList.get(i).getCirculatingPumpFeed(), 1));  //循环泵频率
+            heatNetworkDataList.get(i).setCirculatingPumpSet(parseData2(heatNetworkDataList.get(i).getCirculatingPumpSet()));  //循环泵给定
+            heatNetworkDataList.get(i).setCirculatingPumpFeed(parseData2(heatNetworkDataList.get(i).getCirculatingPumpFeed()));  //循环泵频率
 
-            heatNetworkDataList.get(i).setTargetTempature(parseData(heatNetworkDataList.get(i).getTargetTempature(), 1));  //温度目标设定
-            heatNetworkDataList.get(i).setSecPressureMax(parseData(heatNetworkDataList.get(i).getSecPressureMax(), 1));  //二网压力上限
-            heatNetworkDataList.get(i).setSecPressureSetMax(parseData(heatNetworkDataList.get(i).getSecPressureSetMax(), 1));  //二网压力设定上限
-            heatNetworkDataList.get(i).setSecPressureSetMin(parseData(heatNetworkDataList.get(i).getSecPressureSetMin(), 1));  //二网压力设定下限
-            heatNetworkDataList.get(i).setSecPressureMin(parseData(heatNetworkDataList.get(i).getSecPressureMin(), 1));  //二网压力下限
-            heatNetworkDataList.get(i).setMainValveSet(parseData(heatNetworkDataList.get(i).getMainValveSet(), 1));  //一阀给定
-            heatNetworkDataList.get(i).setMainValveFeed(parseData(heatNetworkDataList.get(i).getMainValveFeed(), 1));  //一阀反馈
-            heatNetworkDataList.get(i).setAuxValveSet(parseData(heatNetworkDataList.get(i).getAuxValveSet(), 1));  //二阀给定
-            heatNetworkDataList.get(i).setAuxValveFeed(parseData(heatNetworkDataList.get(i).getAuxValveFeed(), 1));  //二阀反馈
-            heatNetworkDataList.get(i).setWaterTankLevel(parseData(heatNetworkDataList.get(i).getWaterTankLevel(), 1));  //水箱水位
-            heatNetworkDataList.get(i).setWaterTankMinLevel(parseData(heatNetworkDataList.get(i).getWaterTankMinLevel(), 1));  //水箱水位下限
-            heatNetworkDataList.get(i).setReplenishingPumpSet(parseData(heatNetworkDataList.get(i).getReplenishingPumpSet(), 1));  //补水泵给定
-            heatNetworkDataList.get(i).setReplenishingPumpFeed(parseData(heatNetworkDataList.get(i).getReplenishingPumpFeed(), 1));  //补水泵频率
-            heatNetworkDataList.get(i).setFirstHeatPredict(parseData(heatNetworkDataList.get(i).getFirstHeatPredict(), 1));  //预测热量
-            heatNetworkDataList.get(i).setReplenishingFlow(parseData(heatNetworkDataList.get(i).getReplenishingFlow(), 1));  //补水流量
+            heatNetworkDataList.get(i).setTargetTempature(parseData2(heatNetworkDataList.get(i).getTargetTempature()));  //温度目标设定
+            heatNetworkDataList.get(i).setSecPressureMax(parseData2(heatNetworkDataList.get(i).getSecPressureMax()));  //二网压力上限
+            heatNetworkDataList.get(i).setSecPressureSetMax(parseData2(heatNetworkDataList.get(i).getSecPressureSetMax()));  //二网压力设定上限
+            heatNetworkDataList.get(i).setSecPressureSetMin(parseData2(heatNetworkDataList.get(i).getSecPressureSetMin()));  //二网压力设定下限
+            heatNetworkDataList.get(i).setSecPressureMin(parseData2(heatNetworkDataList.get(i).getSecPressureMin()));  //二网压力下限
+            heatNetworkDataList.get(i).setMainValveSet(parseData2(heatNetworkDataList.get(i).getMainValveSet()));  //一阀给定
+            heatNetworkDataList.get(i).setMainValveFeed(parseData2(heatNetworkDataList.get(i).getMainValveFeed()));  //一阀反馈
+            heatNetworkDataList.get(i).setAuxValveSet(parseData2(heatNetworkDataList.get(i).getAuxValveSet()));  //二阀给定
+            heatNetworkDataList.get(i).setAuxValveFeed(parseData2(heatNetworkDataList.get(i).getAuxValveFeed()));  //二阀反馈
+            heatNetworkDataList.get(i).setWaterTankLevel(parseData2(heatNetworkDataList.get(i).getWaterTankLevel()));  //水箱水位
+            heatNetworkDataList.get(i).setWaterTankMinLevel(parseData2(heatNetworkDataList.get(i).getWaterTankMinLevel()));  //水箱水位下限
+            heatNetworkDataList.get(i).setReplenishingPumpSet(parseData2(heatNetworkDataList.get(i).getReplenishingPumpSet()));  //补水泵给定
+            heatNetworkDataList.get(i).setReplenishingPumpFeed(parseData2(heatNetworkDataList.get(i).getReplenishingPumpFeed()));  //补水泵频率
+            heatNetworkDataList.get(i).setFirstHeatPredict(parseData2(heatNetworkDataList.get(i).getFirstHeatPredict()));  //预测热量
+            heatNetworkDataList.get(i).setReplenishingFlow(parseData2(heatNetworkDataList.get(i).getReplenishingFlow()));  //补水流量
 //        dto.setReplenishingTotal(parseData(dto.getReplenishingTotal(),1));  //补水流量累计
-            heatNetworkDataList.get(i).setElectricPower(parseData(heatNetworkDataList.get(i).getElectricPower(), 1));  //瞬时电量
-            heatNetworkDataList.get(i).setElectricTotal(parseData(heatNetworkDataList.get(i).getElectricTotal(), 1));  //电量累计
-            heatNetworkDataList.get(i).setHeatConsumption(parseData(heatNetworkDataList.get(i).getHeatConsumption(), 1));  //热负荷
-            heatNetworkDataList.get(i).setRoomTempatureAvg(parseData(heatNetworkDataList.get(i).getRoomTempatureAvg(), 2));  //平均室温
+            heatNetworkDataList.get(i).setElectricPower(parseData2(heatNetworkDataList.get(i).getElectricPower()));  //瞬时电量
+            heatNetworkDataList.get(i).setElectricTotal(parseData2(heatNetworkDataList.get(i).getElectricTotal()));  //电量累计
+            heatNetworkDataList.get(i).setHeatConsumption(parseData2(heatNetworkDataList.get(i).getHeatConsumption()));  //热负荷
+            heatNetworkDataList.get(i).setRoomTempatureAvg(parseData2(heatNetworkDataList.get(i).getRoomTempatureAvg()));  //平均室温
         }
         return R.ok("查询成功").putData(heatNetworkDataList);
     }
