@@ -53,4 +53,6 @@ public interface PlanService {
 
     Plan add(HeatMachine heatMachine);
 
+    void updateByStationId(HeatMachine heatMachine);
+
 }

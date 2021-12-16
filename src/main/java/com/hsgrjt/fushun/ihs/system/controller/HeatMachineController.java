@@ -60,6 +60,7 @@ public class HeatMachineController {
     @PostMapping("modify")
     public String modifyMachine(@RequestBody HeatMachine machine) {
         if (heatMachineService.updateById(machine)) {
+
             return JsonMessage.SUCCESS;
         } else {
             return JsonMessage.DATABASE_ERROR;

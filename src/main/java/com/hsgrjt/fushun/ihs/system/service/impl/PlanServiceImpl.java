@@ -83,6 +83,15 @@ public class PlanServiceImpl implements PlanService {
     }
 
     @Override
+    public void updateByStationId(HeatMachine heatMachine) {
+        QueryWrapper<Plan> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(Plan::getStationId,heatMachine.getId().intValue());
+        Plan plan = mapper.selectOne(queryWrapper);
+        plan.setStationName(heatMachine.getName());
+        mapper.updateById(plan);
+    }
+
+    @Override
     public void initData(String company){
         User user1 = new User();
         user1.setAllowCompanys(company);
