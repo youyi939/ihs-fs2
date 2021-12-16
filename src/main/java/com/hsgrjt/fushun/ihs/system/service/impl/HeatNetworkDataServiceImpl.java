@@ -104,7 +104,7 @@ public class HeatNetworkDataServiceImpl implements HeatNetworkDataService {
 
         for (HeatMachine heatMachine : machineList) {
 
-            Plan plan = planService.selectByStationName(heatMachine.getName());
+            Plan plan = planService.selectByStationName(heatMachine.getName(),heatMachine.getId().intValue());
             //拼接sql：根据时间倒序的最后一个截取，机组ID相对应
             HeatNetworkData data = mapper.selectData(heatMachine.getId());
 

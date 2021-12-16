@@ -60,14 +60,25 @@ public class PlanServiceImpl implements PlanService {
     }
 
     @Override
-    public Plan selectByStationName(String stationName) {
+    public Plan selectByStationName(String stationName,Integer stationId) {
         QueryWrapper<Plan> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().eq(Plan::getStationName,stationName);
+        queryWrapper.lambda().eq(Plan::getStationName,stationName).eq(Plan::getStationId,stationId);
         return mapper.selectOne(queryWrapper);
     }
 
     @Override
     public Plan add(HeatMachine heatMachine) {
+        Plan plan = new Plan();
+        plan.setStationId(heatMachine.getId().intValue());
+        plan.setStationName(heatMachine.getName());
+
+        plan.setUpdateTime(new Date());
+        plan.setCompany(heatMachine.getCompany());
+        plan.setWaterPlan(0);
+        plan.setPowerPlan(0);
+        plan.setStay(0);
+        plan.setHeatPlan(0);
+        mapper.insert(plan);
         return null;
     }
 

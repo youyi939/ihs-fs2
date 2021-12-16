@@ -309,7 +309,7 @@ public class MeterStaffServiceImpl implements MeterStaffService {
             dayFormDTO.setStationName(stationName);
 
             double bigSum = 0;
-            Plan plan = planService.selectByStationName(stationName);
+            Plan plan = planService.selectByStationName(stationName,machineList.get(i).getId().intValue());
             List<MeterData> sourceData = meterDataDTOList.get(i).getMeterDataList();
             List<MeterData> targetdata = new ArrayList<>();
             for (int j = 0; j < maxDays; j++) {

@@ -92,7 +92,7 @@ public class MonthServiceImpl implements MonthService {
         List<MonthForm> monthFormList = new ArrayList<>();
 
         for (int i = 0; i < machineList.size(); i++) {
-            Plan plan = planService.selectByStationName(machineList.get(i).getName());
+            Plan plan = planService.selectByStationName(machineList.get(i).getName(),machineList.get(i).getId().intValue());
             MonthForm monthForm = new MonthForm();
             //设置中心站
             monthForm.setCenterStation(machineList.get(i).getCenterStation());

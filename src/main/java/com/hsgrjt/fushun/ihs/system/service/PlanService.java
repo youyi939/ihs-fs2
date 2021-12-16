@@ -47,7 +47,9 @@ public interface PlanService {
      * @param stationName 机组名称
      * @return 计划对象
      */
-    Plan selectByStationName(String stationName);
+    Plan selectByStationName(String stationName,Integer stationId);
+
+
 
     Plan add(HeatMachine heatMachine);
 

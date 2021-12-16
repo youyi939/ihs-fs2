@@ -6,6 +6,7 @@ import com.hsgrjt.fushun.ihs.annotations.RequirePermission;
 import com.hsgrjt.fushun.ihs.system.entity.HeatMachine;
 import com.hsgrjt.fushun.ihs.system.entity.User;
 import com.hsgrjt.fushun.ihs.system.service.HeatMachineService;
+import com.hsgrjt.fushun.ihs.system.service.PlanService;
 import com.hsgrjt.fushun.ihs.utils.JsonMessage;
 import com.hsgrjt.fushun.ihs.utils.Permissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +29,17 @@ import java.util.List;
 public class HeatMachineController {
 
     @Autowired
+    PlanService planService;
+
+    @Autowired
     private HeatMachineService heatMachineService;
 
     @RequirePermission(Permissions.MACHINE_MANAGEMENT)
     @PostMapping("add")
     public String addMachine(@RequestBody HeatMachine machine) {
+
         if (heatMachineService.save(machine)) {
+            planService.add(machine);
             return JsonMessage.SUCCESS;
         } else {
             return JsonMessage.DATABASE_ERROR;

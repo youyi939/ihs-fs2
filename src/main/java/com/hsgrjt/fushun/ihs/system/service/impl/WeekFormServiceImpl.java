@@ -98,7 +98,7 @@ public class WeekFormServiceImpl implements WeekFormService {
         List<WeekForm> weekFormList = new ArrayList<>();
 
         for (int i = 0; i < machineList.size(); i++) {
-            Plan plan = planService.selectByStationName(machineList.get(i).getName());
+            Plan plan = planService.selectByStationName(machineList.get(i).getName(),machineList.get(i).getId().intValue());
             WeekForm weekForm = new WeekForm();
             //设置机组名
             weekForm.setCompany(machineList.get(i).getCompany());
