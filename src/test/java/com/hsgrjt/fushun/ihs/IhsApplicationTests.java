@@ -10,6 +10,7 @@ import com.hsgrjt.fushun.ihs.system.mapper.MeterStaffMapper;
 import com.hsgrjt.fushun.ihs.system.service.HeatMachineService;
 import com.hsgrjt.fushun.ihs.system.service.HeatNetworkDataService;
 import com.hsgrjt.fushun.ihs.system.service.MeterStaffService;
+import com.hsgrjt.fushun.ihs.system.service.PlanService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,12 +38,17 @@ class IhsApplicationTests {
     @Autowired
     HeatMachineService heatMachineService;
 
+    @Autowired
+    PlanService planService;
+
+//    @Test
+    void testPlan(){
+        planService.initData("抚顺新北方");
+        planService.initData("新北方高湾");
+    }
+
 //    @Test
     void test1() throws ParseException {
-
-        User user1 = new User();
-        user1.setAllowCompanys("城南热电");
-        List<HeatMachine> machineList1 = heatMachineService.getMachineByUser(user1);
 
         User user2 = new User();
         user2.setAllowCompanys("抚顺新北方");
@@ -52,44 +58,40 @@ class IhsApplicationTests {
         user3.setAllowCompanys("新北方高湾");
         List<HeatMachine> machineList3 = heatMachineService.getMachineByUser(user3);
 
-        for (int i = 0; i < machineList1.size(); i++) {
-            initMeterData(machineList1.get(i).getId());
+        List<String> days = getDays("2021-11-01","2021-12-09");
+        for (String day : days) {
+            for (int i = 0; i < machineList2.size(); i++) {
+                initMeterData(machineList2.get(i) ,day);
+            }
+
+            for (int i = 0; i < machineList3.size(); i++) {
+                initMeterData(machineList3.get(i),day);
+            }
         }
 
-        for (int i = 0; i < machineList2.size(); i++) {
-            initMeterData(machineList2.get(i).getId());
-        }
 
-        for (int i = 0; i < machineList3.size(); i++) {
-            initMeterData(machineList3.get(i).getId());
-        }
 
     }
 
-    private void initMeterData(Long id) throws ParseException {
-        MeterStaffAddDTO meterStaffAddDTO = new MeterStaffAddDTO();
-        meterStaffAddDTO.setHeat(0);
-        meterStaffAddDTO.setPower(0);
-        meterStaffAddDTO.setWater(0);
-        meterStaffAddDTO.setMachineId(id.intValue());
-        save(meterStaffAddDTO);
+    private void initMeterData(HeatMachine heatMachine,String day) throws ParseException {
+        MeterStaff meterStaff = new MeterStaff();
+        meterStaff.setHeat(0);
+        meterStaff.setPower(0);
+        meterStaff.setWater(0);
+        meterStaff.setMachineId(heatMachine.getId().intValue());
+
+        meterStaff.setMachineName(heatMachine.getName());
+        meterStaff.setCenterStation(heatMachine.getCenterStation());
+
+        DateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
+        Date myDate2 = dateFormat2.parse(day);
+        meterStaff.setGmtCreate(myDate2);
+
+        meterStaffMapper.insert(meterStaff);
     }
 
     private void save(MeterStaffAddDTO dto) throws ParseException {
-        MeterStaff entity = new MeterStaff();
-        BeanUtils.copyProperties(dto, entity);
-        entity.setGmtCreate(new Date());
 
-        HeatMachine machine = heatMachineService.findById(dto.getMachineId());
-        entity.setMachineName(machine.getName());
-        entity.setCenterStation(machine.getCenterStation());
-
-
-        DateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
-        Date myDate2 = dateFormat2.parse("2021-12-12");
-        entity.setGmtCreate(myDate2);
-
-        meterStaffMapper.insert(entity);
     }
 
 

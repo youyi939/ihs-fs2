@@ -51,4 +51,7 @@ public class Plan {
     @ApiModelProperty("入住率")
     private double stay;
 
+    @ApiModelProperty("机组id")
+    private int stationId;
+
 }

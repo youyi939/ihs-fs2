@@ -6,6 +6,8 @@ import com.hsgrjt.fushun.ihs.system.entity.User;
 import com.hsgrjt.fushun.ihs.system.mapper.HeatMachineMapper;
 import com.hsgrjt.fushun.ihs.system.service.HeatMachineService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.hsgrjt.fushun.ihs.system.service.PlanService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,6 +25,8 @@ import java.util.List;
 public class HeatMachineServiceImpl extends ServiceImpl<HeatMachineMapper, HeatMachine> implements HeatMachineService {
 
 
+    @Autowired
+    PlanService planService;
 
 
     @Override

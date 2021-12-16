@@ -44,6 +44,8 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     public void updateById(Plan plan) {
+
+        //热有两个，这个取倒数
         double data = plan.getHeatPlan();
         plan.setHeatPlan2(1/data);
         plan.setUpdateTime(new Date());
@@ -64,7 +66,13 @@ public class PlanServiceImpl implements PlanService {
         return mapper.selectOne(queryWrapper);
     }
 
-    private void initData(String company){
+    @Override
+    public Plan add(HeatMachine heatMachine) {
+        return null;
+    }
+
+    @Override
+    public void initData(String company){
         User user1 = new User();
         user1.setAllowCompanys(company);
         List<HeatMachine> machineList1 = machineService.getMachineByUser(user1);
@@ -73,6 +81,7 @@ public class PlanServiceImpl implements PlanService {
             plan.setCompany(company);
             plan.setStationName(heatMachine.getName());
             plan.setUpdateTime(new Date());
+            plan.setStationId(heatMachine.getId().intValue());
             mapper.insert(plan);
         }
     }

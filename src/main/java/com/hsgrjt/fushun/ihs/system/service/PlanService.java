@@ -1,5 +1,6 @@
 package com.hsgrjt.fushun.ihs.system.service;
 
+import com.hsgrjt.fushun.ihs.system.entity.HeatMachine;
 import com.hsgrjt.fushun.ihs.system.entity.IhsFile;
 import com.hsgrjt.fushun.ihs.system.entity.Plan;
 import com.hsgrjt.fushun.ihs.system.entity.vo.R;
@@ -36,11 +37,18 @@ public interface PlanService {
     void initPlan();
 
     /**
+     * 初始化计划数据
+     * @param company 公司名
+     */
+    void initData(String company);
+
+    /**
      * 查询机组的计划对象
      * @param stationName 机组名称
      * @return 计划对象
      */
     Plan selectByStationName(String stationName);
 
+    Plan add(HeatMachine heatMachine);
 
 }
