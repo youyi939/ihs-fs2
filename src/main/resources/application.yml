@@ -7,6 +7,7 @@ spring:
     username: ihs
     password: admin@123456!
     url: jdbc:mysql://rds.unv.ink:3306/huashun-ihs?useSSL=true&useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
+
 #    username: root
 #    password: 123456
 #    url: jdbc:mysql://127.0.0.1:3306/ken?useSSL=true&useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
