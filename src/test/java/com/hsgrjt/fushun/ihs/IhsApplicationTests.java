@@ -22,7 +22,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-@SpringBootTest
+//@SpringBootTest
 class IhsApplicationTests {
 
     @Autowired
@@ -52,19 +52,12 @@ class IhsApplicationTests {
 //    @Test
     void test1() throws ParseException {
 
-//        User user2 = new User();
-//        user2.setAllowCompanys("抚顺新北方");
-//        List<HeatMachine> machineList2 = heatMachineService.getMachineByUser(user2);
-
         User user3 = new User();
         user3.setAllowCompanys("新北方高湾");
         List<HeatMachine> machineList3 = heatMachineService.getMachineByUser(user3);
 
-        List<String> days = getDays("2021-11-01","2021-12-09");
+        List<String> days = getDays("2021-12-22","2022-1-04");
         for (String day : days) {
-//            for (int i = 0; i < machineList2.size(); i++) {
-//                initMeterData(machineList2.get(i) ,day);
-//            }
 
             for (int i = 0; i < machineList3.size(); i++) {
                 initMeterData(machineList3.get(i),day);
@@ -79,7 +72,7 @@ class IhsApplicationTests {
     /**
      * 导入指定日期的水电热数据
      */
-    @Test
+//    @Test
     void insertMeterData() throws ParseException, InterruptedException {
 
         double[] water = {

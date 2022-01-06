@@ -1,11 +1,13 @@
 package com.hsgrjt.fushun.ihs.dataInput;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.hsgrjt.fushun.ihs.system.entity.HeatMachine;
 import com.hsgrjt.fushun.ihs.system.entity.MeterStaff;
 import com.hsgrjt.fushun.ihs.system.entity.vo.R;
 import com.hsgrjt.fushun.ihs.system.mapper.MeterStaffMapper;
 import com.hsgrjt.fushun.ihs.system.service.HeatMachineService;
 import com.hsgrjt.fushun.ihs.system.service.MeterStaffService;
+import com.hsgrjt.fushun.ihs.utils.V;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -28,7 +30,7 @@ import java.util.List;
  * @Description:  数据导入 ！！！仅用于测试环境
  * @Date: Create in  2021/12/29 下午10:54
  */
-@RestController
+//@RestController
 public class InputController {
 
     @Autowired
@@ -43,7 +45,10 @@ public class InputController {
     @PostMapping("/input/meter")
     @ApiOperation(value="导入水电热数据")
     public R inputMeter(@RequestBody InputMeter inputMeter){
-        List<String> days = getDays("2020-11-1","2021-4-5");
+
+        List<String> days2 = getDays("2021-11-1","2021-12-21");
+        List<String> days = getDays("2020-11-1","2021-3-31");
+        days.addAll(days2);
 
         HeatMachine machine = heatMachineService.findById(inputMeter.getMachineId());
 
@@ -60,25 +65,33 @@ public class InputController {
 
     @Async
     public void insertMeter(String day,double iwater,double ipower,double iheat,HeatMachine machine){
-        MeterStaff meterStaff = new MeterStaff();
-        meterStaff.setHeat(iheat);
-        meterStaff.setPower(ipower);
-        meterStaff.setWater(iwater);
-        meterStaff.setMachineId(machine.getId().intValue());
 
-        meterStaff.setMachineName(machine.getName());
-        meterStaff.setCenterStation(machine.getCenterStation());
+        String[] temp = day.split("-");
+        if (V.isEmpty(meterStaffMapper.selectByTime(Integer.parseInt(temp[0]),Integer.parseInt(temp[1]),Integer.parseInt(temp[2]),machine.getId()))){
 
-        DateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
-        Date myDate2 = null;
-        try {
-            myDate2 = dateFormat2.parse(day);
-        } catch (ParseException e) {
-            e.printStackTrace();
+            MeterStaff meterStaff = new MeterStaff();
+            meterStaff.setHeat(iheat);
+            meterStaff.setPower(ipower);
+            meterStaff.setWater(iwater);
+            meterStaff.setMachineId(machine.getId().intValue());
+
+            meterStaff.setMachineName(machine.getName());
+            meterStaff.setCenterStation(machine.getCenterStation());
+
+            DateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
+            Date myDate2 = null;
+            try {
+                myDate2 = dateFormat2.parse(day);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            meterStaff.setGmtCreate(myDate2);
+
+            meterStaffMapper.insert(meterStaff);
+        }else {
+            meterStaffMapper.updateHeatByMachineId(Math.toIntExact(machine.getId()),iwater,ipower,iheat,Integer.parseInt(temp[0]),Integer.parseInt(temp[1]),Integer.parseInt(temp[2]));
         }
-        meterStaff.setGmtCreate(myDate2);
 
-        meterStaffMapper.insert(meterStaff);
     }
 
 

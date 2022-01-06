@@ -15,6 +15,7 @@ import com.hsgrjt.fushun.ihs.system.service.PlanService;
 import com.hsgrjt.fushun.ihs.utils.V;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.xml.crypto.Data;
@@ -104,31 +105,35 @@ public class HeatNetworkDataServiceImpl implements HeatNetworkDataService {
 
         for (HeatMachine heatMachine : machineList) {
 
-            Plan plan = planService.selectByStationName(heatMachine.getName(),heatMachine.getId().intValue());
-            //拼接sql：根据时间倒序的最后一个截取，机组ID相对应
-            HeatNetworkData data = mapper.selectData(heatMachine.getId());
-
-            if (!V.isEmpty(data)){
-                HeatNetworkDataDTO dto = new HeatNetworkDataDTO();
-                BeanUtils.copyProperties(data, dto);
-                //set机组名称
-                dto.setStationName(heatMachine.getName());
-                dto.setSupplyArea(plan.getArea());
-
-                //格式化时间
-                Date dNow = data.getGmtCreate();
-                SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                dto.setCreateDate(ft.format(dNow));
-                dto = initData(dto);
-
-                heatNetworkDataList.add(dto);
-            }
-
+            getData(heatMachine, heatNetworkDataList);
 
         }
 
 
         return R.ok("查询成功").putData(heatNetworkDataList);
+    }
+
+    @Async
+    public void getData(HeatMachine heatMachine, List<HeatNetworkDataDTO> heatNetworkDataList) {
+        Plan plan = planService.selectByStationName(heatMachine.getName(), heatMachine.getId().intValue());
+        //拼接sql：根据时间倒序的最后一个截取，机组ID相对应
+        HeatNetworkData data = mapper.selectData(heatMachine.getId());
+
+        if (!V.isEmpty(data)) {
+            HeatNetworkDataDTO dto = new HeatNetworkDataDTO();
+            BeanUtils.copyProperties(data, dto);
+            //set机组名称
+            dto.setStationName(heatMachine.getName());
+            dto.setSupplyArea(plan.getArea());
+
+            //格式化时间
+            Date dNow = data.getGmtCreate();
+            SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            dto.setCreateDate(ft.format(dNow));
+            dto = initData(dto);
+
+            heatNetworkDataList.add(dto);
+        }
     }
 
 
