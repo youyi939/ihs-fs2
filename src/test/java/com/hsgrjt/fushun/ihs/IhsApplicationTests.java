@@ -11,6 +11,7 @@ import com.hsgrjt.fushun.ihs.system.service.HeatMachineService;
 import com.hsgrjt.fushun.ihs.system.service.HeatNetworkDataService;
 import com.hsgrjt.fushun.ihs.system.service.MeterStaffService;
 import com.hsgrjt.fushun.ihs.system.service.PlanService;
+import com.hsgrjt.fushun.ihs.utils.V;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,8 +46,20 @@ class IhsApplicationTests {
 
 //    @Test
     void testPlan(){
-        planService.initData("抚顺新北方");
-        planService.initData("新北方高湾");
+//        planService.initData("抚顺新北方");
+//        planService.initData("新北方高湾");
+
+
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String dateNowStr = sdf.format(date);
+        String[] temp = dateNowStr.split("-");
+        MeterStaff meterStaff = meterStaffMapper.selectByTime(Integer.parseInt(temp[0]),Integer.parseInt(temp[1]),Integer.parseInt(temp[2]),(long)1);
+        if (V.isEmpty(meterStaff)){
+            System.out.println("为空");
+        }else {
+            System.out.println("不为空");
+        }
     }
 
 //    @Test
@@ -56,9 +69,8 @@ class IhsApplicationTests {
         user3.setAllowCompanys("新北方高湾");
         List<HeatMachine> machineList3 = heatMachineService.getMachineByUser(user3);
 
-        List<String> days = getDays("2021-12-22","2022-1-04");
+        List<String> days = getDays("2021-12-17","2022-1-12");
         for (String day : days) {
-
             for (int i = 0; i < machineList3.size(); i++) {
                 initMeterData(machineList3.get(i),day);
             }

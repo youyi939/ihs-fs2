@@ -54,7 +54,14 @@ public class MeterStaffServiceImpl implements MeterStaffService {
         entity.setMachineName(machine.getName());
         entity.setCenterStation(machine.getCenterStation());
 
-        meterStaffMapper.insert(entity);
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String dateNowStr = sdf.format(date);
+        String[] temp = dateNowStr.split("-");
+        MeterStaff meterStaff = meterStaffMapper.selectByTime(Integer.parseInt(temp[0]),Integer.parseInt(temp[1]),Integer.parseInt(temp[2]),(long)dto.getMachineId());
+        if (V.isEmpty(meterStaff)){
+            meterStaffMapper.insert(entity);
+        }
     }
 
     @Override
