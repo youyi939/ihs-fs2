@@ -50,6 +50,30 @@ public interface HeatNetworkDataMapper extends BaseMapper<HeatNetworkData> {
     );
 
 
+    /**
+     * 根据时间，机组筛选折线图所需的数据
+     * @param year 年
+     * @param month 月
+     * @param day 日
+     * @param machineId 机组id
+     * @return
+     */
+    @Select("SELECT * from heat_network_data where " +
+            "YEAR(gmt_create) = #{year} " +
+            "and MONTH(gmt_create) = #{month} " +
+            "AND DAY(gmt_create) = #{day} " +
+            "and station_id = #{machineId} ")
+    List<HeatNetworkData> selectByTimeOneDay(
+            @Param("year") Integer year,
+            @Param("month") Integer month,
+            @Param("day") Integer day,
+            @Param("machineId") Integer machineId
+    );
+
+
+
+
+
     @Update("update heat_network_data set main_valve_set = #{i}  where " +
             "YEAR(gmt_create) = #{year} " +
             "and MONTH(gmt_create) = #{month} " +
