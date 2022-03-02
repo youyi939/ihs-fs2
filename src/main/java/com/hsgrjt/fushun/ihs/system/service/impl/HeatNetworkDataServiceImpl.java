@@ -102,11 +102,29 @@ public class HeatNetworkDataServiceImpl implements HeatNetworkDataService {
         //dto的list
         List<HeatNetworkDataDTO> heatNetworkDataList = new ArrayList<>();
 
+//        所有机组的最新数据
+        List<HeatNetworkData> networkDataList = mapper.selectDataList();
+        //已选机组的list
+        List<HeatNetworkData> dataList = new ArrayList<>();             
+
+//        筛选机组
+        for (HeatNetworkData heatNetworkData : networkDataList) {
+            for (HeatMachine heatMachine : machineList) {
+                if (heatNetworkData.getStationId() == heatMachine.getId().intValue()) {
+                    dataList.add(heatNetworkData);
+                }
+            }
+        }
+
 
         for (HeatMachine heatMachine : machineList) {
-
-            getData(heatMachine, heatNetworkDataList);
-
+            HeatNetworkData data = null;
+            for (HeatNetworkData heatNetworkData : dataList) {
+                if (heatMachine.getId().intValue() == heatNetworkData.getStationId()) {
+                    data = heatNetworkData;
+                }
+            }
+            getData(heatMachine, heatNetworkDataList,data);
         }
 
 
@@ -114,17 +132,19 @@ public class HeatNetworkDataServiceImpl implements HeatNetworkDataService {
     }
 
     @Async
-    public void getData(HeatMachine heatMachine, List<HeatNetworkDataDTO> heatNetworkDataList) {
+    public void getData(HeatMachine heatMachine, List<HeatNetworkDataDTO> heatNetworkDataList,HeatNetworkData data) {
         Plan plan = planService.selectByStationName(heatMachine.getName(), heatMachine.getId().intValue());
-        //拼接sql：根据时间倒序的最后一个截取，机组ID相对应
-        HeatNetworkData data = mapper.selectData(heatMachine.getId());
 
         if (!V.isEmpty(data)) {
             HeatNetworkDataDTO dto = new HeatNetworkDataDTO();
             BeanUtils.copyProperties(data, dto);
             //set机组名称
             dto.setStationName(heatMachine.getName());
-            dto.setSupplyArea(plan.getArea());
+            if (V.isEmpty(plan)){
+                dto.setSupplyArea(0);
+            }else {
+                dto.setSupplyArea(plan.getArea());
+            }
 
             //格式化时间
             Date dNow = data.getGmtCreate();

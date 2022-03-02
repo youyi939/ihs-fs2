@@ -88,177 +88,17 @@ public class MeterStaffServiceImpl implements MeterStaffService {
                 } else {
                     MeterData meterData = new MeterData();
                     meterData.setMeterData(0);
-//                    Calendar c = Calendar.getInstance();
-//                    SimpleDateFormat format =  new SimpleDateFormat("yyyy-MM");
-//                    String time = format.format(c.getTime());
-//                    meterData.setMeterTime(time+"-"+j);
                     meterData.setMeterTime(selectYear + "-" + selectMonth + "-" + j);
                     sourceData.add(meterData);
                 }
             }
             meterDataDTO.setMeterDataList(sourceData);
-
         }
 
 
         return R.ok("查询成功").putData(meterDataDTOList);
     }
 
-
-//    /**
-//     * 查看日报表
-//     *
-//     * @param user
-//     * @return
-//     */
-//    @Override
-//    public R<List<DayFormDTO>> getDayFromWater(User user, Integer selectYear, Integer selectMonth) {
-//        int maxDays = getDaysOfMonth(selectYear, selectMonth);    //本月最大天数
-//        List<DayFormDTO> dayFormDTOList = new ArrayList<>();
-//        List<String> centerStations = machineService.getCenterStation(user.getAllowCompanys());
-//        List<HeatMachine> machines = machineService.getMachineByUser(user);
-//
-//        DayFormDTO xiaojiDayForm = new DayFormDTO();      //小记对象
-//        xiaojiDayForm.setStationName("小记");
-//        List<MeterData> xiaojiList = new ArrayList<>();
-//
-//        //计算日指标
-//        Map<Integer, Double> monthScale = new HashMap<Integer, Double>();
-//        monthScale.put(11, 0.17);
-//        monthScale.put(12, 0.25);
-//        monthScale.put(1, 0.25);
-//        monthScale.put(2, 0.19);
-//        monthScale.put(3, 0.14);
-//        int maxDayLast = getDaysOfMonth(selectYear, selectMonth - 2);
-//        int maxDayNext = getDaysOfMonth(selectYear, selectMonth );
-//
-//        //循环遍历中心站，最多也就1-2次
-//        for (String centerStation : centerStations) {
-//            //这个list是拿到的当前中心站下面的机组列表
-//            List<HeatMachine> machineList = machineService.getMachineByCenterStation(centerStation);
-//
-//            //这个是需要set进dayReport中的list,这个list中的对象存的就是具体的数据
-//            List<MeterDataDTO> meterDataDTOList = new ArrayList<>();
-//
-//            //获得机组的水电热数据
-//            getMachineMeterStaffData(meterDataDTOList, machineList, "水", selectYear, selectMonth);
-//
-//            //计算数据过程---只计算基础数据和合计等单机组合计数据
-//            for (MeterDataDTO meterDataDTO : meterDataDTOList) {
-//                System.out.println("\033[31;4m" + meterDataDTO.toString() + "\033[0m");
-//                double bigSum = 0;
-//                String stationName = meterDataDTO.getStationName();
-//                Plan plan = planService.selectByStationName(stationName);
-//                List<MeterData> sourceData = meterDataDTO.getMeterDataList();
-//                List<MeterData> targetdata = new ArrayList<>();
-//                for (int j = 0; j < maxDays; j++) {
-//                    MeterData meterData = new MeterData();
-//                    //避免月底的情况，数组越界。月底单独获取，单独计算
-//                    if (j < sourceData.size() - 1) {
-//                        meterData.setMeterTime(sourceData.get(j).getMeterTime());
-//                        double data = sourceData.get(j + 1).getMeterData() - sourceData.get(j).getMeterData();
-//                        meterData.setMeterData(data);
-//                        bigSum += data;
-//                        targetdata.add(meterData);
-//                    } else {
-//                        MeterData data = meterStaffMapper.selectByTime(selectYear,selectMonth,maxDayNext,machineList.get())
-//                        double data = 0;
-//                        meterData.setMeterData(data);
-//                        bigSum += data;
-//                        targetdata.add(meterData);
-//                    }
-//                }
-//
-//                DayFormDTO dayFormDTO = new DayFormDTO();
-//                dayFormDTO.setCenterStation(centerStation);
-//                dayFormDTO.setStationName(stationName);
-//                dayFormDTO.setBigSum(bigSum);
-//                dayFormDTO.setMeterDataList(targetdata);
-//                dayFormDTO.setYearPlan(plan.getWaterPlan());
-//                dayFormDTO.setYearPlanResidue(plan.getWaterPlan() - bigSum);
-//
-//                //日指标计算
-//                double dayTarget = (plan.getWaterPlan() * plan.getArea() / 1000) * monthScale.get(11) / maxDays;
-//                dayFormDTO.setDayTarget(parseData(dayTarget, 2));
-//                dayFormDTOList.add(dayFormDTO);
-//            }
-//        }
-//
-//        //计算数据过程---计算小记、结余等多机组合计数据
-//        for (int i = 0; i < maxDays; i++) {
-//            MeterData meterData = new MeterData();
-//            double smallSum = 0;
-//            for (int j = 0; j < dayFormDTOList.size(); j++) {
-//                smallSum += dayFormDTOList.get(j).getMeterDataList().get(i).getMeterData();
-//            }
-//            meterData.setMeterData(smallSum);
-//            xiaojiList.add(meterData);
-//        }
-//        xiaojiDayForm.setMeterDataList(xiaojiList);
-//        xiaojiDayForm.setBigSum(xiaojiList.stream().mapToDouble(MeterData::getMeterData).sum());
-//
-//        //计算结余,循环特殊对象：小记的meterData，这里存储的都是机组的小记，就是不同机组同一天数据的合
-//        DayFormDTO jieyuFromData = new DayFormDTO();
-//        jieyuFromData.setStationName("结余");
-//        List<MeterData> jieyuData = new ArrayList<>();
-//        double residue = 0;
-//        for (int i = 0; i < xiaojiDayForm.getMeterDataList().size(); i++) {
-//            MeterData meterData = new MeterData();
-//            if (i == 0) {          //月初第一天特殊计算
-//
-//                double xiaojiYueChu = 0;
-//                for (int j = 0; j < machines.size(); j++) {
-//                    MeterStaff lastMeter = meterStaffMapper.selectByTime(selectYear, selectMonth - 1, maxDayLast, machines.get(j).getId());
-//                    if (!V.isEmpty(lastMeter)) {
-//                        xiaojiYueChu += lastMeter.getWater();
-//                    }
-//                }
-//
-//                residue = xiaojiDayForm.getMeterDataList().get(i).getMeterData() - xiaojiYueChu;
-//                meterData.setMeterData(residue);
-//                jieyuData.add(meterData);
-//            } else {
-//                residue = xiaojiDayForm.getMeterDataList().get(i - 1).getMeterData() - xiaojiDayForm.getMeterDataList().get(i).getMeterData() + jieyuData.get(i - 1).getMeterData();
-//                meterData.setMeterData(residue);
-//                jieyuData.add(meterData);
-//            }
-//        }
-//
-//        jieyuFromData.setBigSum(jieyuData.stream().mapToDouble(MeterData::getMeterData).sum());
-//        jieyuFromData.setMeterDataList(jieyuData);
-//
-//
-//        //计算中心站小计,循环遍历中心站（有几个中心站）
-//        for (String centerStation : centerStations) {
-//            DayFormDTO centerDtoXiaoji = new DayFormDTO();
-//            centerDtoXiaoji.setStationName(centerStation + "小记");
-//            DayFormDTO centerDtoJieyu = new DayFormDTO();
-//            centerDtoJieyu.setStationName(centerStation + "小记");
-//            System.out.println(centerStation);
-//            List<MeterData> xiaojiListCenter = new ArrayList<>();
-//            List<MeterData> jieyuListCenter = new ArrayList<>();
-//            //循环遍历数据对象，查看哪个对象的中心站属性跟中心站能对应上
-//            for (int j = 0; j < maxDays; j++) {
-//                MeterData meterData = new MeterData();
-//                double smallSum = 0;
-//                for (int k = 0; k < dayFormDTOList.size(); k++) {
-//                    if (dayFormDTOList.get(k).getCenterStation() != null && dayFormDTOList.get(k).getCenterStation().equals(centerStation)) {
-//                        smallSum += dayFormDTOList.get(k).getMeterDataList().get(j).getMeterData();
-//                    }
-//                }
-//                meterData.setMeterData(smallSum);
-//                xiaojiListCenter.add(meterData);
-//            }
-//            centerDtoXiaoji.setMeterDataList(xiaojiListCenter);
-//            dayFormDTOList.add(centerDtoXiaoji);
-//        }
-//
-//
-//        dayFormDTOList.add(xiaojiDayForm);
-//        dayFormDTOList.add(jieyuFromData);
-//
-//        return R.ok("查询成功").putData(dayFormDTOList);
-//    }
 
 
     /**
@@ -619,7 +459,7 @@ public class MeterStaffServiceImpl implements MeterStaffService {
                         data = meterStaff.getWater();
                         break;
                     case "电":
-                        data = meterStaff.getPower()*machine.getMultiplyingPower();
+                        data = meterStaff.getPower();
                         break;
                     case "热":
                         data = meterStaff.getHeat();

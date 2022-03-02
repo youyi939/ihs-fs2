@@ -66,7 +66,7 @@ public class UserController {
 
     @PostMapping("updateUserNode")
     public R updateUserNode(@RequestBody User user) {
-        userService.updateUserNode(user.getNote(),user.getId());
+        userService.updateUserNode(user.getNote(), user.getId());
         return R.ok("更新成功");
     }
 
@@ -118,6 +118,39 @@ public class UserController {
         }
     }
 
+
+    @GetMapping("loginGet")
+    public Object login(@RequestParam("Username") String username, @RequestParam("password") String password, HttpServletResponse response) {
+        if (username != null) {
+            User user = userService.getUserByLoginUsername(username);
+            System.out.println(username);
+            if (user == null) {
+                return JsonMessage.LOGIN_FAIL;
+            } else {
+                // 用户信息存在，比对密码
+                if (user.getPassword().equals(password)) {
+                    // 密码正确，生成token
+                    int cookieSaveSeconds = GlobalConfiguration.COOKIE_SAVE_SECONDS;
+                    cookieSaveSeconds = GlobalConfiguration.COOKIE_SAVE_SECONDS_REMEMBER;
+                    String token = TokenUtil.createJwtToken("userId:" + user.getId(), cookieSaveSeconds);
+                    TokenSession session = new TokenSession(token, cookieSaveSeconds, user.getId());
+                    if (tokenService.save(session)) {
+                        user.setPassword(token);
+                        return user;
+                    } else {
+                        return JsonMessage.DATABASE_ERROR;
+                    }
+                    // 将token封装入密码回传
+                } else {
+                    return JsonMessage.LOGIN_FAIL;
+                }
+            }
+        } else {
+            return JsonMessage.PARAMETER_ERROR;
+        }
+    }
+
+
     @GetMapping("logout/{userId}")
     public String logout(@PathVariable String userId, HttpServletRequest request) {
         // 清除session
@@ -126,8 +159,8 @@ public class UserController {
     }
 
     @GetMapping("/isUserVip")
-    public Boolean isUserVip(@RequestParam ("id") Integer id,@RequestParam("type")String type){
-        return userService.isUserVip(id,type);
+    public Boolean isUserVip(@RequestParam("id") Integer id, @RequestParam("type") String type) {
+        return userService.isUserVip(id, type);
     }
 
 }

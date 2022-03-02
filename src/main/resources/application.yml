@@ -1,5 +1,9 @@
 server:
-  port: 8160
+  port: 8161
+  ssl:
+    key-store: classpath:7317039_fsihs.unv.ink.pfx
+    key-store-type: PKCS12
+    key-store-password: 7jmv6xVW
 
 spring:
   datasource:
@@ -45,3 +49,5 @@ oss:
 #  accessKeyId: LTAI4Fmxt15JMN7bPa9bxnMb
 #  accessKeySecret: rtuJsWXY3NkvJMUGpMBsMJmlsdxqsd
 #  bucketName: kenchen
+
+
