@@ -45,6 +45,12 @@ class IhsApplicationTests {
     ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
 //    @Test
+    void initData(){
+        meterStaffService.initDataEveryDay();
+    }
+
+
+//    @Test
     void testPlan(){
 //        planService.initData("抚顺新北方");
 //        planService.initData("新北方高湾");
@@ -65,18 +71,18 @@ class IhsApplicationTests {
 //    @Test
     void test1() throws ParseException {
 
-        User user3 = new User();
-        user3.setAllowCompanys("新北方高湾");
-        List<HeatMachine> machineList3 = heatMachineService.getMachineByUser(user3);
+        String ids = "148,149,150,151,152,153,154,155";
 
-        List<String> days = getDays("2021-12-17","2022-1-12");
+//        User user3 = new User();
+//        user3.setAllowCompanys("新北方高湾");
+        List<HeatMachine> machineList3 = heatMachineService.selectMachineByUser(ids);
+
+        List<String> days = getDays("2022-1-1","2022-3-8");
         for (String day : days) {
             for (int i = 0; i < machineList3.size(); i++) {
                 initMeterData(machineList3.get(i),day);
             }
         }
-
-
 
     }
 

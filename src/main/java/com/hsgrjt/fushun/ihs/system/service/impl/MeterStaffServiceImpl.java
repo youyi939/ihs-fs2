@@ -82,7 +82,7 @@ public class MeterStaffServiceImpl implements MeterStaffService {
         //补全数据，如果数据库里的数据不足月天数，则填写虚假数据加入到list中
         for (MeterDataDTO meterDataDTO : meterDataDTOList) {
             List<MeterData> sourceData = meterDataDTO.getMeterDataList();
-            for (int j = 1; j < maxDays + 1; j++) {
+            for (int j = 1; j <= maxDays ; j++) {
                 if (sourceData.size() >= j) {
 
                 } else {
@@ -94,6 +94,27 @@ public class MeterStaffServiceImpl implements MeterStaffService {
             }
             meterDataDTO.setMeterDataList(sourceData);
         }
+
+        //将查询结果排序
+        for (MeterDataDTO meterDataDTO : meterDataDTOList) {
+            meterDataDTO.getMeterDataList().sort(new Comparator<MeterData>() {
+                @Override
+                public int compare(MeterData o1, MeterData o2) {
+                    String temp1 = o1.getMeterTime().split("-")[2];
+                    String temp2 = o2.getMeterTime().split("-")[2];
+                    int diff = Integer.parseInt(temp1) - Integer.parseInt(temp2);
+
+                    if (diff > 0) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
+                }
+            });
+            System.out.println(meterDataDTO.getMeterDataList().size());
+        }
+
+
 
 
         return R.ok("查询成功").putData(meterDataDTOList);
@@ -391,13 +412,26 @@ public class MeterStaffServiceImpl implements MeterStaffService {
 
     @Override
     public R updateByMachineId(Integer machineId, double water, double power, double heat) {
+
+
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
         String[] temp = formatter.format(date).split("-");
         int year = Integer.parseInt(temp[0]);
         int month = Integer.parseInt(temp[1]);
         int day = Integer.parseInt(temp[2]);
-        meterStaffMapper.updateHeatByMachineId(machineId,water,power,heat,year,month,day);
+
+        if (!V.isEmpty( meterStaffMapper.selectByTime(year,month,day, machineId.longValue())) ){
+            meterStaffMapper.updateHeatByMachineId(machineId,water,power,heat,year,month,day);
+            return R.ok("更新成功");
+        }
+
+        MeterStaffAddDTO meterStaffAddDTO = new MeterStaffAddDTO();
+        meterStaffAddDTO.setHeat(heat);
+        meterStaffAddDTO.setPower(power);
+        meterStaffAddDTO.setWater(water);
+        meterStaffAddDTO.setMachineId(machineId);
+        save(meterStaffAddDTO);
         return R.ok("更新成功");
     }
 
@@ -409,6 +443,7 @@ public class MeterStaffServiceImpl implements MeterStaffService {
         meterStaffAddDTO.setWater(0);
         meterStaffAddDTO.setMachineId(id.intValue());
         save(meterStaffAddDTO);
+//        System.out.println(id);
     }
 
 

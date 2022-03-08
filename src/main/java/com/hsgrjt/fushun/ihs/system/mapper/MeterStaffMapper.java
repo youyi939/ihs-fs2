@@ -21,29 +21,32 @@ public interface MeterStaffMapper extends BaseMapper<MeterStaff> {
 
 
     @Update("update meter_staff set heat = #{data} where id = #{id};")
-    void updateHeat(@Param("data")double data ,@Param("id") int id);
+    void updateHeat(@Param("data") double data, @Param("id") int id);
 
     @Update("update meter_staff set water = #{data} where id = #{id};")
-    void updateWater(@Param("data")double data ,@Param("id") int id);
+    void updateWater(@Param("data") double data, @Param("id") int id);
 
     @Update("update meter_staff set power = #{data} where id = #{id};")
-    void updatePower(@Param("data")double data ,@Param("id") int id);
+    void updatePower(@Param("data") double data, @Param("id") int id);
 
+    /**
+     * 根据时间和机组id返回对象
+     */
     @Select("SELECT * from meter_staff where YEAR(gmt_create) = #{year} and MONTH(gmt_create) = #{month} AND DAY(gmt_create) = #{day} and machine_id = #{machineId}")
-    MeterStaff selectByTime(@Param("year") int year,@Param("month") int month,@Param("day") int day,@Param("machineId") Long machineId);
+    MeterStaff selectByTime(@Param("year") int year, @Param("month") int month, @Param("day") int day, @Param("machineId") Long machineId);
 
     @Update("update meter_staff set heat = #{heat} ,water = #{water} ,power = #{power} where machine_id = #{machineId} and\n" +
             "YEAR(gmt_create) = #{year}\n" +
             "and MONTH(gmt_create) = #{month}\n" +
             "AND DAY(gmt_create) = #{day};")
     void updateHeatByMachineId(
-            @Param("machineId")Integer machineId
-            ,@Param("water") double water
-            ,@Param("power") double power
-            ,@Param("heat") double heat
-            ,@Param("year") Integer year
-            ,@Param("month") Integer month
-            ,@Param("day") Integer day
+            @Param("machineId") Integer machineId
+            , @Param("water") double water
+            , @Param("power") double power
+            , @Param("heat") double heat
+            , @Param("year") Integer year
+            , @Param("month") Integer month
+            , @Param("day") Integer day
     );
 
 
@@ -52,11 +55,11 @@ public interface MeterStaffMapper extends BaseMapper<MeterStaff> {
             "and MONTH(gmt_create) = #{month}\n" +
             "AND DAY(gmt_create) = #{day};")
     void updatePowerByMachineId(
-            @Param("machineId")Integer machineId
-            ,@Param("power") double power
-            ,@Param("year") Integer year
-            ,@Param("month") Integer month
-            ,@Param("day") Integer day
+            @Param("machineId") Integer machineId
+            , @Param("power") double power
+            , @Param("year") Integer year
+            , @Param("month") Integer month
+            , @Param("day") Integer day
     );
 
     @Update("update meter_staff set heat = #{heat} where machine_id = #{machineId} and\n" +
@@ -64,11 +67,11 @@ public interface MeterStaffMapper extends BaseMapper<MeterStaff> {
             "and MONTH(gmt_create) = #{month}\n" +
             "AND DAY(gmt_create) = #{day};")
     void updateHeatByMachineId2(
-            @Param("machineId")Integer machineId
-            ,@Param("heat") double heat
-            ,@Param("year") Integer year
-            ,@Param("month") Integer month
-            ,@Param("day") Integer day
+            @Param("machineId") Integer machineId
+            , @Param("heat") double heat
+            , @Param("year") Integer year
+            , @Param("month") Integer month
+            , @Param("day") Integer day
     );
 
     @Update("update meter_staff set water = #{water} where machine_id = #{machineId} and\n" +
@@ -76,11 +79,11 @@ public interface MeterStaffMapper extends BaseMapper<MeterStaff> {
             "and MONTH(gmt_create) = #{month}\n" +
             "AND DAY(gmt_create) = #{day};")
     void updateWaterByMachineId(
-            @Param("machineId")Integer machineId
-            ,@Param("water") double water
-            ,@Param("year") Integer year
-            ,@Param("month") Integer month
-            ,@Param("day") Integer day
+            @Param("machineId") Integer machineId
+            , @Param("water") double water
+            , @Param("year") Integer year
+            , @Param("month") Integer month
+            , @Param("day") Integer day
     );
 
 }

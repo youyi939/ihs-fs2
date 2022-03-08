@@ -43,7 +43,12 @@ public class HeatMachineServiceImpl extends ServiceImpl<HeatMachineMapper, HeatM
     public List<HeatMachine> getMachineByUser(User user) {
 
         QueryWrapper<HeatMachine> queryWrapper = new QueryWrapper<>();
+        if ("新北方供热".equals(user.getAllowCompanys())){
+            queryWrapper.lambda().eq(HeatMachine::getCompany,"抚顺新北方");
+            return baseMapper.selectList(queryWrapper);
+        }
         queryWrapper.lambda().eq(HeatMachine::getCompany,user.getAllowCompanys());
+
         return baseMapper.selectList(queryWrapper);
     }
 
